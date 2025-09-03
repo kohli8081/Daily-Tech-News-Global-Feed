@@ -1,196 +1,539 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Global Tech News — Daily Digest</title>
-  <meta name="description" content="Daily updated tech news from around the world. India news always on top." />
-  <style>
-    :root{
-      --bg:#f7fafc; --card:#ffffff; --muted:#6b7280; --text:#0f172a; --accent:#0f62fe;
-      --card-border:#e6e9ef; --tag:#eef2ff; --scroll:#0f62fe;
-    }
-    html.dark{ 
-      --bg:#121212; --card:#1e1e1e; --muted:#a1a1aa; --text:#e4e4e7; 
-      --accent:#3b82f6; --card-border:#2e2e2e; --tag:#27272a; --scroll:#06b6d4;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:var(--text);}
-    header{position:sticky;top:0;z-index:20;background:var(--card);backdrop-filter:blur(6px);border-bottom:1px solid var(--card-border)}
-    .bar{max-width:1200px;margin:0 auto;padding:14px;display:flex;align-items:center;gap:12px;justify-content:space-between}
-    .brand{display:flex;gap:12px;align-items:center}
-    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#2563eb);display:grid;place-items:center;color:white;font-weight:700}
-    .title{font-weight:700;font-size:1.05rem}
-    .subtitle{font-size:0.82rem;color:var(--muted)}
-    .controls{max-width:1200px;margin:14px auto;padding:0 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .input, select{padding:10px 12px;border-radius:10px;border:1px solid var(--card-border);background:var(--card);color:var(--text);min-width:160px}
-    .search{flex:1;min-width:180px}
-    .btn{padding:10px 14px;border-radius:10px;border:1px solid var(--card-border);background:var(--card);color:var(--accent);cursor:pointer;font-weight:600}
-    .btn:hover{background:var(--accent);color:#fff;transition:all .2s}
-    .container{max-width:1200px;margin:18px auto;padding:0 14px 80px;display:grid;gap:18px}
-    .card{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,0.12)}
-    .india-section .card{border-left:4px solid #f59e0b}
-    .card h3{margin:0;font-size:1rem}
-    .meta{font-size:12px;color:var(--muted);margin-top:6px}
-    .grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-    .tag{display:inline-block;font-size:12px;padding:6px 8px;border-radius:999px;background:var(--tag);color:var(--text);border:1px solid var(--card-border);margin-right:8px}
-    .desc{color:var(--muted);margin-top:8px;font-size:0.92rem;line-height:1.3}
-    .row{display:flex;align-items:center;gap:8px;justify-content:space-between}
-    .small{font-size:12px;color:var(--muted)}
-    .floating{position:fixed;right:18px;bottom:28px;z-index:60;width:46px;height:46px;border-radius:10px;border:1px solid var(--card-border);background:var(--scroll);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.25)}
-    .hidden{display:none}
-    a{color:var(--accent);text-decoration:none}
-    a:hover{text-decoration:underline}
-    .loader{display:inline-block;border:3px solid rgba(0,0,0,0.08);border-left-color:var(--accent);border-radius:999px;width:18px;height:18px;animation:spin .9s linear infinite}
-    img.article-img{max-width:100%;height:auto;border-radius:8px;margin-top:8px}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    @media(max-width:640px){ .bar{padding:12px} .title{font-size:0.98rem} .controls{gap:8px} }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Global Tech News — Daily</title>
+<meta name="description" content="Top 10 global tech headlines plus per-country tech news with a full ISO country list." />
+<style>
+  :root{
+    --bg:#f7fafc; --card:#ffffff; --muted:#475569; --text:#0f172a; --accent:#0f62fe;
+    --card-border:#e6e9ef; --tag:#eef2ff; --shadow:0 8px 20px rgba(2,6,23,.06);
+    --scroll-bg:#0f62fe; --scroll-fg:#fff; --link:#0f62fe;
+  }
+  html.dark{
+    --bg:#121212; --card:#1e1e1e; --muted:#a1a1aa; --text:#e4e4e7; --accent:#3b82f6;
+    --card-border:#2a2a2a; --tag:#26272b; --shadow:0 8px 24px rgba(0,0,0,.35);
+    --scroll-bg:#06b6d4; --scroll-fg:#041016; --link:#60a5fa;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial;background:var(--bg);color:var(--text);}
+  header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.7);backdrop-filter:blur(8px);border-bottom:1px solid var(--card-border)}
+  html.dark header{background:rgba(30,30,30,.7)}
+  .bar{max-width:1200px;margin:0 auto;padding:14px;display:flex;align-items:center;gap:12px;justify-content:space-between}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#2563eb);display:grid;place-items:center;color:#fff;font-weight:800}
+  .title{font-weight:800;font-size:1.05rem}
+  .subtitle{font-size:.82rem;color:var(--muted)}
+  .controls{max-width:1200px;margin:14px auto;padding:0 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .input,select{padding:10px 12px;border-radius:12px;border:1px solid var(--card-border);background:var(--card);color:var(--text);min-width:170px}
+  .search{flex:1;min-width:220px}
+  .btn{padding:10px 14px;border-radius:12px;border:1px solid var(--card-border);background:var(--card);color:var(--accent);font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+  .btn:hover{background:var(--accent);color:#fff;transition:.2s}
+  .container{max-width:1200px;margin:18px auto;padding:0 14px 80px;display:grid;gap:18px}
+  .section{display:grid;gap:12px}
+  .card{background:var(--card);border:1px solid var(--card-border);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:1rem;line-height:1.25}
+  a{color:var(--link);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .meta{font-size:12px;color:var(--muted);margin-top:6px}
+  .desc{color:var(--muted);margin-top:8px;font-size:.92rem;line-height:1.35}
+  .grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+  .hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+  .thumb{width:100%;height:170px;border-radius:10px;object-fit:cover;background:#e5e7eb}
+  html.dark .thumb{background:#111827}
+  .floating{position:fixed;right:18px;bottom:24px;z-index:60;width:46px;height:46px;border-radius:50%;border:none;background:var(--scroll-bg);color:var(--scroll-fg);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);font-weight:800}
+  .hidden{display:none}
+  .loader{display:inline-block;border:3px solid rgba(0,0,0,.08);border-left-color:var(--accent);border-radius:999px;width:18px;height:18px;animation:spin .9s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @media (max-width:640px){ .bar{padding:12px} .title{font-size:.98rem} .controls{gap:8px} }
+</style>
 </head>
 <body>
-<header>
-  <div class="bar">
-    <div class="brand">
-      <div class="logo">TN</div>
-      <div>
-        <div class="title">Global Tech News</div>
-        <div class="subtitle">Daily worldwide technology updates</div>
+  <header>
+    <div class="bar">
+      <div class="brand">
+        <div class="logo">TN</div>
+        <div>
+          <div class="title">Global Tech News</div>
+          <div class="subtitle">Top 10 worldwide • Per-country tech feeds</div>
+        </div>
       </div>
+      <button id="themeToggle" class="btn" aria-label="Toggle theme">🌙 Dark</button>
     </div>
-    <button id="themeToggle" class="btn">🌙</button>
-  </div>
-</header>
+  </header>
 
-<div class="controls">
-  <input type="text" id="searchInput" class="input search" placeholder="Search news..." />
-  <select id="countryFilter"></select>
-  <button id="refreshBtn" class="btn">⟳ Refresh</button>
-</div>
-
-<div class="container">
-  <section id="indiaNews" class="india-section">
-    <h2>🇮🇳 India Tech News</h2>
-    <div id="indiaFeed" class="grid-auto"></div>
+  <section class="controls" aria-label="Filters">
+    <input id="search" class="input search" placeholder="Search headlines (AI, smartphones, security…)" />
+    <select id="country" class="input" title="Country (ISO list)"></select>
+    <button id="refresh" class="btn" aria-label="Refresh feeds">⟳ Refresh</button>
   </section>
-  <section>
-    <h2 id="countryTitle">🌍 Global Tech News</h2>
-    <div id="newsFeed" class="grid-auto"></div>
-  </section>
-</div>
 
-<button id="scrollTopBtn" class="floating hidden">↑</button>
+  <main class="container">
+    <section class="section">
+      <h2>🌍 Top 10 Global Tech News</h2>
+      <div id="globalTop" class="hero-grid"></div>
+    </section>
+
+    <section class="section">
+      <h2 id="countryTitle">Per-Country Tech News</h2>
+      <div id="countryFeed" class="grid-auto"></div>
+      <div id="countryMsg" class="meta"></div>
+    </section>
+  </main>
+
+  <button id="scrollTop" class="floating hidden" title="Scroll to top">↑</button>
 
 <script>
-const PROXY="https://api.allorigins.win/get?url=";
-const SOURCES={
-  "Global":[
-    "https://feeds.feedburner.com/TechCrunch/",
+/* -------------------------------------------------------
+   Config
+------------------------------------------------------- */
+const PROXY = 'https://api.allorigins.win/get?url=';
+
+/* Realistic feed map (no fake sources). If a country is missing here,
+   we will show a friendly "no sources" message. */
+const FEEDS_BY_COUNTRY = {
+  "Global": [
+    "https://techcrunch.com/feed/",
+    "https://www.theverge.com/rss/index.xml",
+    "https://www.engadget.com/rss.xml",
+    "https://www.wired.com/feed/rss",
+    "https://hnrss.org/frontpage",
+    "https://feeds.arstechnica.com/arstechnica/technology"
+  ],
+  "India": [
+    "https://feeds.feedburner.com/ndtvnews-ndtvtech",
+    "https://feeds.feedburner.com/gadgets360-latest"
+  ],
+  "United States": [
+    "https://techcrunch.com/feed/",
     "https://www.theverge.com/rss/index.xml",
     "https://www.wired.com/feed/rss",
-    "https://www.engadget.com/rss.xml",
-    "https://hnrss.org/frontpage"
+    "https://feeds.arstechnica.com/arstechnica/technology"
   ],
-  "India":[
-    "https://gadgets360.com/rss/news",
-    "https://feeds.feedburner.com/ndtvnews-tech"
+  "United Kingdom": [
+    "http://feeds.bbci.co.uk/news/technology/rss.xml",
+    "https://www.theguardian.com/uk/technology/rss",
+    "https://www.wired.co.uk/feed/rss",
+    "https://www.techradar.com/rss"
   ],
-  "USA":[
-    "https://www.theverge.com/rss/index.xml",
-    "https://feeds.feedburner.com/TechCrunch/"
+  "Canada": [
+    "https://financialpost.com/category/technology/feed/",
+    "https://mobilesyrup.com/feed/"
   ],
-  "UK":[
-    "https://www.techradar.com/rss",
-    "https://www.wired.co.uk/feed/rss"
+  "Australia": [
+    "https://www.zdnet.com/topic/australia/rss.xml",
+    "https://www.itnews.com.au/RSS/rss.ashx"
   ],
-  "Germany":[
-    "https://www.heise.de/rss/heise-atom.xml"
+  "New Zealand": [
+    "https://www.nzherald.co.nz/technology/rss.xml"
   ],
-  "Japan":[
-    "https://japantoday.com/feed/technology"
+  "Germany": [
+    "https://www.heise.de/rss/heise-atom.xml",
+    "https://www.golem.de/rss.php?feed=RSS2.0"
   ],
-  "China":[
+  "France": [
+    "https://www.lemonde.fr/technologies/rss_full.xml",
+    "https://www.numerama.com/feed/"
+  ],
+  "Spain": [
+    "https://www.xataka.com/index.xml",
+    "https://elpais.com/tecnologia/rss/"
+  ],
+  "Italy": [
+    "https://www.wired.it/feed/"
+  ],
+  "Netherlands": [
+    "https://tweakers.net/feeds/nieuws.rss"
+  ],
+  "Sweden": [
+    "https://www.nyteknik.se/rss"
+  ],
+  "Norway": [
+    "https://www.tek.no/rss"
+  ],
+  "Denmark": [
+    "https://www.version2.dk/feeds/all"
+  ],
+  "Finland": [
+    "https://www.hs.fi/rss/teknologia.xml"
+  ],
+  "Ireland": [
+    "https://www.siliconrepublic.com/feed"
+  ],
+  "Switzerland": [
+    "https://www.swissinfo.ch/eng/tech/rss"
+  ],
+  "Austria": [
+    "https://futurezone.at/rss"
+  ],
+  "Poland": [
+    "https://www.dobreprogramy.pl/feed"
+  ],
+  "Portugal": [
+    "https://pplware.sapo.pt/feed/"
+  ],
+  "Czech Republic": [
+    "https://www.root.cz/rss/clanky/"
+  ],
+  "Slovakia": [
+    "https://www.zive.sk/rss/"
+  ],
+  "Hungary": [
+    "https://hvg.hu/rss/tech"
+  ],
+  "Romania": [
+    "https://www.go4it.ro/feed/"
+  ],
+  "Greece": [
+    "https://www.insomnia.gr/rss/articles/"
+  ],
+  "Russia": [
+    "https://habr.com/ru/rss/articles/"
+  ],
+  "Turkey": [
+    "https://shiftdelete.net/feed"
+  ],
+  "Israel": [
+    "https://www.calcalist.co.il/home/0,7340,L-8,00.html?service=rss"
+  ],
+  "United Arab Emirates": [
+    "https://www.khaleejtimes.com/category/technology/feed"
+  ],
+  "Saudi Arabia": [
+    "https://www.argaam.com/rss/getbycategoryid/26" /* business/tech mix */
+  ],
+  "South Africa": [
+    "https://mybroadband.co.za/news/feed"
+  ],
+  "Nigeria": [
+    "https://technext24.com/feed/"
+  ],
+  "Kenya": [
+    "https://techweez.com/feed/"
+  ],
+  "Egypt": [
+    "https://www.egypttoday.com/Section/318/Technology/feed"
+  ],
+  "Japan": [
+    "https://japantoday.com/feed/technology",
+    "https://www.itmedia.co.jp/rss2/0,9602,2,00.xml"
+  ],
+  "South Korea": [
+    "https://www.koreatimes.co.kr/www/rss/tech.xml"
+  ],
+  "China": [
+    "https://www.scmp.com/rss/91/feed" /* Tech section */
+  ],
+  "Hong Kong": [
     "https://www.scmp.com/rss/91/feed"
   ],
-  "Australia":[
-    "https://www.zdnet.com/topic/australia/rss.xml"
+  "Taiwan": [
+    "https://www.digitimes.com/rss/daily.xml"
+  ],
+  "Singapore": [
+    "https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=technology"
+  ],
+  "Malaysia": [
+    "https://www.soyacincau.com/feed/"
+  ],
+  "Indonesia": [
+    "https://dailysocial.id/rss"
+  ],
+  "Thailand": [
+    "https://www.bangkokpost.com/rss/data/tech.xml"
+  ],
+  "Vietnam": [
+    "https://vnexpress.net/rss/so-hoa.rss"
+  ],
+  "Philippines": [
+    "https://www.yugatech.com/feed/"
+  ],
+  "Pakistan": [
+    "https://propakistani.pk/tech/feed/"
+  ],
+  "Bangladesh": [
+    "https://www.dhakatribune.com/feeds/category/tech"
+  ],
+  "Sri Lanka": [
+    "https://www.lankabusinessonline.com/category/technology/feed/"
+  ],
+  "Nepal": [
+    "https://techlekh.com/feed/"
+  ],
+  "Bhutan": [],
+  "Myanmar": [
+    "https://elevenmyanmar.com/tech/rss.xml"
+  ],
+  "Brazil": [
+    "https://www.tecmundo.com.br/rss"
+  ],
+  "Argentina": [
+    "https://www.iprofesional.com/rss/tecnologia"
+  ],
+  "Chile": [
+    "https://www.fayerwayer.com/rss/"
+  ],
+  "Colombia": [
+    "https://www.enter.co/feed/"
+  ],
+  "Mexico": [
+    "https://www.xataka.com.mx/index.xml"
+  ],
+  "Peru": [
+    "https://rpp.pe/tecnologia/tecnologia/rss"
+  ],
+  "Uruguay": [
+    "https://www.elpais.com.uy/rss/tecnologia.xml"
+  ],
+  "Venezuela": [
+    "https://www.elestimulo.com/tecnologia/feed/"
+  ],
+  "Bolivia": [],
+  "Paraguay": [],
+  "Ecuador": [
+    "https://www.elcomercio.com/feed/tecnologia"
+  ],
+  "Costa Rica": [
+    "https://www.nacion.com/rss/tecnologia/"
+  ],
+  "Panama": [],
+  "Guatemala": [],
+  "Honduras": [],
+  "El Salvador": [],
+  "Nicaragua": [],
+  "Cuba": [],
+  "Jamaica": [],
+  "Trinidad and Tobago": [],
+  "Iceland": [
+    "https://www.visir.is/rss/tech"
   ]
+  /* You can keep extending this list over time. Countries with [] will show a friendly message. */
 };
-// Fill select with all keys
-const countryFilter=document.getElementById("countryFilter");
-Object.keys(SOURCES).forEach(c=>{
-  const opt=document.createElement("option");
-  opt.value=c;opt.textContent=c;countryFilter.appendChild(opt);
+
+/* Full ISO country list (name only). Keeps UI complete and realistic. */
+const ISO_COUNTRIES = [
+  "Global","Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan",
+  "Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi",
+  "Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica","Côte d'Ivoire","Croatia","Cuba","Cyprus","Czech Republic",
+  "Democratic Republic of the Congo","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia",
+  "Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India",
+  "Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho",
+  "Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia",
+  "Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea",
+  "North Macedonia","Norway","Oman","Pakistan","Palau","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda",
+  "Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone",
+  "Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria",
+  "Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates",
+  "United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
+];
+
+/* -------------------------------------------------------
+   DOM
+------------------------------------------------------- */
+const els = {
+  globalTop: document.getElementById('globalTop'),
+  countryFeed: document.getElementById('countryFeed'),
+  countryMsg: document.getElementById('countryMsg'),
+  country: document.getElementById('country'),
+  title: document.getElementById('countryTitle'),
+  search: document.getElementById('search'),
+  refresh: document.getElementById('refresh'),
+  theme: document.getElementById('themeToggle'),
+  scrollTop: document.getElementById('scrollTop'),
+};
+
+/* Populate ISO countries dynamically */
+(function populateCountries(){
+  ISO_COUNTRIES.forEach(name=>{
+    const o=document.createElement('option');
+    o.value=name; o.textContent=name;
+    els.country.appendChild(o);
+  });
+  els.country.value = 'Global';
+})();
+
+/* Theme toggle */
+(function initTheme(){
+  const root=document.documentElement;
+  const saved=localStorage.getItem('theme');
+  if(saved==='dark') root.classList.add('dark');
+  els.theme.textContent = root.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
+  els.theme.addEventListener('click',()=>{
+    root.classList.toggle('dark');
+    localStorage.setItem('theme', root.classList.contains('dark') ? 'dark' : 'light');
+    els.theme.textContent = root.classList.contains('dark') ? '☀️ Light' : '🌙 Dark';
+  });
+})();
+
+/* Scroll-to-top */
+window.addEventListener('scroll',()=>{
+  els.scrollTop.classList.toggle('hidden', window.scrollY < 280);
 });
-countryFilter.value="Global";
-const indiaFeed=document.getElementById("indiaFeed");
-const newsFeed=document.getElementById("newsFeed");
-const countryTitle=document.getElementById("countryTitle");
+els.scrollTop.addEventListener('click',()=> window.scrollTo({top:0,behavior:'smooth'}));
+
+/* -------------------------------------------------------
+   RSS helpers
+------------------------------------------------------- */
+function parseXMLItems(xmlText){
+  const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+  const items = [];
+
+  // RSS <item>
+  xml.querySelectorAll('item').forEach(it=>{
+    items.push({
+      title: it.querySelector('title')?.textContent?.trim() || 'Untitled',
+      link: it.querySelector('link')?.textContent?.trim() || '#',
+      date: new Date(it.querySelector('pubDate')?.textContent || it.querySelector('dc\\:date')?.textContent || Date.now()),
+      desc: strip((it.querySelector('description')?.textContent || it.querySelector('content\\:encoded')?.textContent || '').trim()),
+      img: getImageFromItem(it)
+    });
+  });
+
+  // Atom <entry>
+  xml.querySelectorAll('entry').forEach(it=>{
+    const linkEl = [...it.querySelectorAll('link')].find(l => !l.getAttribute('rel') || l.getAttribute('rel')==='alternate');
+    const link = linkEl?.getAttribute('href') || linkEl?.textContent || '#';
+    items.push({
+      title: it.querySelector('title')?.textContent?.trim() || 'Untitled',
+      link,
+      date: new Date(it.querySelector('updated')?.textContent || it.querySelector('published')?.textContent || Date.now()),
+      desc: strip((it.querySelector('summary')?.textContent || it.querySelector('content')?.textContent || '').trim()),
+      img: getImageFromItem(it)
+    });
+  });
+
+  return items.filter(a=>a.link && a.title);
+}
+
+function getImageFromItem(node){
+  // media:content or enclosure
+  const m = node.querySelector('media\\:content, content, enclosure[url]');
+  if(m){
+    const url = m.getAttribute?.('url') || m.textContent || '';
+    if(url && isImageURL(url)) return url;
+  }
+  // <img> inside description/content
+  const html = node.querySelector('description, content\\:encoded, content')?.textContent || '';
+  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  if(match && isImageURL(match[1])) return match[1];
+  return '';
+}
+
+function isImageURL(u){
+  return /^https?:\/\//i.test(u) && /\.(png|jpe?g|gif|webp|avif)$/i.test(u);
+}
+
+function strip(html){
+  const d=document.createElement('div'); d.innerHTML = html; return d.textContent||'';
+}
 
 async function fetchFeed(url){
   try{
-    const res=await fetch(PROXY+encodeURIComponent(url));
-    const data=await res.json();
-    const xml=new DOMParser().parseFromString(data.contents,"text/xml");
-    return [...xml.querySelectorAll("item")].map(item=>({
-      title:item.querySelector("title")?.textContent,
-      link:item.querySelector("link")?.textContent,
-      desc:item.querySelector("description")?.textContent,
-      date:item.querySelector("pubDate")?.textContent,
-      img:item.querySelector("media\\:content, enclosure[url]")?.getAttribute("url") || ""
-    }));
-  }catch(e){return []}
-}
-
-function renderArticles(container,articles){
-  container.innerHTML="";
-  if(!articles.length){container.innerHTML="<p>No news found. Showing older posts soon.</p>";return;}
-  articles.forEach(a=>{
-    const card=document.createElement("div");card.className="card";
-    card.innerHTML=`<h3><a href="${a.link}" target="_blank">${a.title}</a></h3>
-      ${a.img?`<img src="${a.img}" class="article-img" alt="">`:""}
-      <div class="meta">${new Date(a.date).toLocaleString()}</div>
-      <div class="desc">${a.desc||""}</div>`;
-    container.appendChild(card);
-  });
-}
-
-async function loadNews(){
-  document.getElementById("refreshBtn").innerHTML='<span class="loader"></span>';
-  // India always
-  let indiaArticles=[];
-  for(const url of SOURCES["India"]){indiaArticles=[...indiaArticles,...await fetchFeed(url)]}
-  renderArticles(indiaFeed,indiaArticles.slice(0,6));
-  // Selected
-  const sel=countryFilter.value;
-  countryTitle.textContent=`${sel==="Global"?"🌍 Global":sel} Tech News`;
-  let articles=[];
-  for(const url of SOURCES[sel]||[]){articles=[...articles,...await fetchFeed(url)]}
-  if(!articles.length){ // fallback: show global if empty
-    for(const url of SOURCES["Global"]){articles=[...articles,...await fetchFeed(url)]}
+    const res = await fetch(PROXY + encodeURIComponent(url));
+    if(!res.ok) throw new Error('fetch failed');
+    const data = await res.json();
+    return parseXMLItems(data.contents||'');
+  }catch(e){
+    console.warn('Feed error:', url, e);
+    return [];
   }
-  renderArticles(newsFeed,articles.slice(0,12));
-  document.getElementById("refreshBtn").textContent="⟳ Refresh";
 }
 
-document.getElementById("refreshBtn").onclick=loadNews;
-countryFilter.onchange=loadNews;
-document.getElementById("searchInput").oninput=e=>{
-  const q=e.target.value.toLowerCase();
-  document.querySelectorAll(".card").forEach(c=>{
-    c.style.display=c.textContent.toLowerCase().includes(q)?"block":"none";
+function uniqueBy(items, keyFn){
+  const seen = new Set(); const out=[];
+  for(const it of items){
+    const k = keyFn(it);
+    if(!seen.has(k)){ seen.add(k); out.push(it); }
+  }
+  return out;
+}
+
+/* -------------------------------------------------------
+   Rendering
+------------------------------------------------------- */
+function renderCard(a){
+  const img = a.img ? `<img class="thumb" src="${a.img}" alt="">` : '';
+  const desc = a.desc ? `<div class="desc">${a.desc.length>180 ? a.desc.slice(0,180)+'…' : a.desc}</div>` : '';
+  return `<article class="card">
+    ${img}
+    <h3><a href="${a.link}" target="_blank" rel="noopener">${a.title}</a></h3>
+    <div class="meta">${a.date.toLocaleString()}</div>
+    ${desc}
+  </article>`;
+}
+
+function renderList(el, list, emptyMsg){
+  el.innerHTML = list.length ? list.map(renderCard).join('') : `<div class="card"><div class="meta">${emptyMsg}</div></div>`;
+}
+
+/* -------------------------------------------------------
+   Loaders
+------------------------------------------------------- */
+async function loadGlobalTop(){
+  els.globalTop.innerHTML = '<div class="card"><span class="loader"></span> Loading global headlines…</div>';
+  const feeds = FEEDS_BY_COUNTRY['Global'] || [];
+  const batches = await Promise.all(feeds.map(fetchFeed));
+  let items = batches.flat();
+  items = uniqueBy(items, a=>a.title+'|'+a.link).sort((a,b)=>b.date-a.date).slice(0,10);
+  renderList(els.globalTop, items, 'No global tech news available at the moment.');
+}
+
+async function loadCountry(name){
+  els.countryFeed.innerHTML = '<div class="card"><span class="loader"></span> Loading…</div>';
+  els.countryMsg.textContent = '';
+  els.title.textContent = name==='Global' ? 'Per-Country Tech News' : `${name} — Latest Tech News`;
+
+  // If no mapping exists or feeds list is empty — friendly message
+  if(!(name in FEEDS_BY_COUNTRY) || !FEEDS_BY_COUNTRY[name] || FEEDS_BY_COUNTRY[name].length===0){
+    els.countryFeed.innerHTML = '';
+    els.countryMsg.textContent = 'No tech news sources are available for this country yet.';
+    return;
+  }
+
+  const feeds = FEEDS_BY_COUNTRY[name];
+  const batches = await Promise.all(feeds.map(fetchFeed));
+  let items = uniqueBy(batches.flat(), a=>a.title+'|'+a.link).sort((a,b)=>b.date-a.date);
+
+  // Try fresh (<= 3 days). If none, fall back to older items.
+  const cutoff = Date.now() - 3*24*60*60*1000;
+  let fresh = items.filter(a=>a.date.getTime() >= cutoff);
+  if(fresh.length===0 && items.length>0){
+    els.countryMsg.textContent = 'No recent articles in the last 3 days — showing the latest available posts.';
+    fresh = items;
+  }else if(items.length===0){
+    els.countryMsg.textContent = 'No news available from the mapped sources right now. Please check back later.';
+  }
+
+  renderList(els.countryFeed, fresh.slice(0, 18), 'No news available for this country.');
+}
+
+/* -------------------------------------------------------
+   Events
+------------------------------------------------------- */
+els.refresh.addEventListener('click', async ()=>{
+  els.refresh.innerHTML = '<span class="loader"></span>';
+  await Promise.all([loadGlobalTop(), loadCountry(els.country.value)]);
+  els.refresh.textContent = '⟳ Refresh';
+});
+
+els.country.addEventListener('change', ()=> loadCountry(els.country.value));
+
+els.search.addEventListener('input', ()=>{
+  const q = els.search.value.trim().toLowerCase();
+  document.querySelectorAll('#globalTop .card, #countryFeed .card').forEach(card=>{
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(q) ? '' : 'none';
   });
-};
+});
 
-const themeToggle=document.getElementById("themeToggle");
-themeToggle.onclick=()=>{
-  document.documentElement.classList.toggle("dark");
-  themeToggle.textContent=document.documentElement.classList.contains("dark")?"☀️":"🌙";
-};
-const scrollBtn=document.getElementById("scrollTopBtn");
-window.addEventListener("scroll",()=>{scrollBtn.classList.toggle("hidden",window.scrollY<300)});
-scrollBtn.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
-
-loadNews();
+/* -------------------------------------------------------
+   Initial load
+------------------------------------------------------- */
+(async function init(){
+  await loadGlobalTop();
+  await loadCountry(els.country.value || 'Global');
+})();
 </script>
 </body>
 </html>
