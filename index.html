@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daily Tech News — Global Feed</title>
+  <meta name="description" content="A dynamic, auto-updating daily technology news blog that aggregates top stories from multiple sources worldwide." />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%23111' d='M40 64h176a8 8 0 0 1 0 16H40a8 8 0 0 1 0-16m0 56h176a8 8 0 0 1 0 16H40a8 8 0 0 1 0-16m0 56h176a8 8 0 0 1 0 16H40a8 8 0 0 1 0-16'/%3E%3C/svg%3E" />
+  <style>
+    /* Minimal refinements */
+    .tag { @apply text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200; }
+    .card { @apply bg-white border border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-md transition; }
+    .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+    .fade-in { animation: fade .4s ease-in both; }
+    @keyframes fade { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <header class="sticky top-0 z-50 backdrop-blur bg-white/80 border-b">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-black text-white grid place-items-center font-bold">TN</div>
+      <div class="flex-1">
+        <h1 class="text-xl md:text-2xl font-bold leading-tight">Daily Tech News — Global</h1>
+        <p class="text-sm text-gray-600">Fresh tech headlines every day, from trusted sources worldwide. Auto-updated on each visit.</p>
+      </div>
+      <a href="#" id="installBtn" class="hidden md:inline-block text-sm font-semibold px-3 py-2 rounded-xl border bg-white hover:bg-gray-50">Install App</a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 pt-6 pb-20">
+    <!-- Controls -->
+    <section class="mb-6 flex flex-col md:flex-row gap-3 md:items-center">
+      <div class="flex-1 flex gap-2">
+        <input id="search" type="search" placeholder="Search headlines (AI, Apple, cybersecurity, etc.)" class="w-full px-4 py-2.5 rounded-xl border outline-none focus:ring-2 focus:ring-black/10" />
+        <select id="sourceFilter" class="px-3 py-2.5 rounded-xl border min-w-[180px] outline-none focus:ring-2 focus:ring-black/10">
+          <option value="">All sources</option>
+        </select>
+      </div>
+      <div class="flex gap-2">
+        <select id="days" class="px-3 py-2.5 rounded-xl border outline-none focus:ring-2 focus:ring-black/10">
+          <option value="1">Today</option>
+          <option value="3" selected>Last 3 days</option>
+          <option value="7">Last 7 days</option>
+        </select>
+        <button id="refreshBtn" class="px-4 py-2.5 rounded-xl border bg-white hover:bg-gray-50 font-semibold">Refresh</button>
+      </div>
+    </section>
+
+    <!-- Daily Digest (auto one per day) -->
+    <section id="digest" class="mb-8"></section>
+
+    <!-- News groups by day -->
+    <section id="news" class="space-y-8"></section>
+
+    <footer class="mt-16 text-center text-sm text-gray-500">
+      <p>Built with vanilla JS + RSS. No API key needed. Sources: TechCrunch, The Verge, Ars Technica, Engadget, WIRED, Hacker News (frontpage).</p>
+    </footer>
+  </main>
+
+  <script>
+    // ====== Configuration ======
+    const SOURCES = [
+      { name: 'TechCrunch', url: 'https://techcrunch.com/feed/' },
+      { name: 'The Verge', url: 'https://www.theverge.com/tech/rss/index.xml' },
+      { name: 'Ars Technica', url: 'https://feeds.arstechnica.com/arstechnica/technology-lab' },
+      { name: 'Engadget', url: 'https://www.engadget.com/rss.xml' },
+      { name: 'WIRED', url: 'https://www.wired.com/feed/rss' },
+      { name: 'Hacker News', url: 'https://hnrss.org/frontpage' },
+    ];
+
+    // CORS-friendly proxy (public). In production, consider your own tiny proxy.
+    const PROXY = 'https://api.allorigins.win/raw?url=';
+
+    // ====== Helpers ======
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    const fmtDate = (d) => d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
+    const dayKey = (d) => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+
+    function uniqueBy(arr, keyFn) {
+      const seen = new Set();
+      return arr.filter(item => {
+        const k = keyFn(item);
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
+    }
+
+    function parseRSS(xmlText, sourceName) {
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(xmlText, 'text/xml');
+
+      // RSS 2.0
+      const items = [...xml.querySelectorAll('item')].map(el => ({
+        title: el.querySelector('title')?.textContent?.trim() || 'Untitled',
+        link: el.querySelector('link')?.textContent?.trim() || '#',
+        pubDate: new Date(el.querySelector('pubDate')?.textContent || el.querySelector('dc\:date')?.textContent || Date.now()),
+        source: sourceName,
+        description: el.querySelector('description')?.textContent || '',
+      }));
+
+      // Atom
+      const entries = [...xml.querySelectorAll('entry')].map(el => ({
+        title: el.querySelector('title')?.textContent?.trim() || 'Untitled',
+        link: el.querySelector('link')?.getAttribute('href') || '#',
+        pubDate: new Date(el.querySelector('updated')?.textContent || el.querySelector('published')?.textContent || Date.now()),
+        source: sourceName,
+        description: el.querySelector('summary')?.textContent || el.querySelector('content')?.textContent || '',
+      }));
+
+      return [...items, ...entries];
+    }
+
+    async function fetchFeed(src) {
+      const url = PROXY + encodeURIComponent(src.url);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Fetch failed for ' + src.name);
+      const txt = await res.text();
+      const items = parseRSS(txt, src.name);
+      return items;
+    }
+
+    async function loadNews() {
+      toggleLoading(true);
+      const daysBack = parseInt($('#days').value, 10);
+
+      const results = await Promise.allSettled(SOURCES.map(fetchFeed));
+      let articles = [];
+      results.forEach((r, i) => {
+        if (r.status === 'fulfilled') articles = articles.concat(r.value);
+        else console.warn('Source failed:', SOURCES[i].name, r.reason);
+      });
+
+      // Clean + dedupe: use title+source as key, filter by date window
+      const now = new Date();
+      const cutoff = new Date(now.getTime() - daysBack*24*60*60*1000);
+      articles = articles
+        .filter(a => a.pubDate instanceof Date && !isNaN(a.pubDate) && a.pubDate >= cutoff)
+        .map(a => ({ ...a, key: a.title.toLowerCase().replace(/\s+/g,' ').slice(0,160) + '|' + a.source }))
+        .sort((a,b) => b.pubDate - a.pubDate);
+      articles = uniqueBy(articles, a => a.key);
+
+      render(articles);
+      toggleLoading(false);
+    }
+
+    function render(articles) {
+      // Populate source filter
+      const sources = Array.from(new Set(articles.map(a => a.source))).sort();
+      const sourceFilter = $('#sourceFilter');
+      sourceFilter.innerHTML = '<option value="">All sources</option>' + sources.map(s => `<option>${s}</option>`).join('');
+
+      // Search + filter handler
+      function applyFilters() {
+        const q = $('#search').value.trim().toLowerCase();
+        const s = sourceFilter.value;
+        let filtered = articles.filter(a => (!s || a.source === s) && (!q || a.title.toLowerCase().includes(q)));
+        renderDigest(filtered);
+        renderByDay(filtered);
+      }
+
+      $('#search').oninput = applyFilters;
+      sourceFilter.onchange = applyFilters;
+      applyFilters();
+    }
+
+    function renderDigest(articles) {
+      // Create a daily auto-post style "digest" block for the most recent day
+      const container = $('#digest');
+      container.innerHTML = '';
+      if (!articles.length) return;
+      const latestDay = dayKey(articles[0].pubDate);
+      const dayArticles = articles.filter(a => dayKey(a.pubDate) === latestDay).slice(0, 10);
+      const bullets = dayArticles.map(a => `
+        <li class="flex gap-2 items-start">
+          <span class="tag shrink-0">${a.source}</span>
+          <a class="underline decoration-dotted hover:no-underline" href="${a.link}" target="_blank" rel="noopener">${escapeHtml(a.title)}</a>
+        </li>
+      `).join('');
+
+      container.innerHTML = `
+        <div class="card fade-in">
+          <div class="flex items-center justify-between gap-3 mb-2">
+            <h2 class="text-lg md:text-xl font-bold">Daily Tech Digest — ${latestDay}</h2>
+            <span class="tag">Auto-generated</span>
+          </div>
+          <p class="text-gray-600 mb-3">Your quick skim of today's biggest tech headlines. New every day.</p>
+          <ul class="space-y-2">${bullets}</ul>
+        </div>
+      `;
+    }
+
+    function renderByDay(articles) {
+      const wrap = $('#news');
+      wrap.innerHTML = '';
+      if (!articles.length) {
+        wrap.innerHTML = `<div class="text-center text-gray-500">No tech stories found for the selected range. Try widening the date range or clearing filters.</div>`;
+        return;
+      }
+
+      // Group by day
+      const groups = {};
+      for (const a of articles) {
+        const key = dayKey(a.pubDate);
+        (groups[key] ||= []).push(a);
+      }
+
+      // Sort groups by date desc
+      const days = Object.keys(groups).sort((a,b) => new Date(b) - new Date(a));
+
+      for (const d of days) {
+        const list = groups[d].sort((a,b) => b.pubDate - a.pubDate);
+        const cards = list.map(a => ArticleCard(a)).join('');
+        const section = document.createElement('section');
+        section.className = 'space-y-4 fade-in';
+        section.innerHTML = `
+          <div class="flex items-end justify-between">
+            <h3 class="text-lg md:text-xl font-bold">${fmtSectionTitle(d)}</h3>
+            <span class="text-xs text-gray-500">${list.length} posts</span>
+          </div>
+          <div class="grid-auto">${cards}</div>
+        `;
+        wrap.appendChild(section);
+      }
+    }
+
+    function fmtSectionTitle(dayStr) {
+      const [y,m,d] = dayStr.split('-').map(Number);
+      const dt = new Date(y, m-1, d);
+      const isToday = (new Date()).toDateString() === dt.toDateString();
+      const isYesterday = (()=>{ const t=new Date(); t.setDate(t.getDate()-1); return t.toDateString()===dt.toDateString();})();
+      if (isToday) return `Today — ${fmtDate(dt)}`;
+      if (isYesterday) return `Yesterday — ${fmtDate(dt)}`;
+      return fmtDate(dt);
+    }
+
+    function ArticleCard(a) {
+      const time = a.pubDate instanceof Date && !isNaN(a.pubDate) ? a.pubDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+      return `
+        <article class="card">
+          <div class="flex items-start justify-between gap-3 mb-2">
+            <span class="tag">${a.source}</span>
+            <time class="text-xs text-gray-500">${time}</time>
+          </div>
+          <a class="block text-base md:text-lg font-semibold leading-snug hover:underline" href="${a.link}" target="_blank" rel="noopener">${escapeHtml(a.title)}</a>
+          ${a.description ? `<p class="mt-2 text-sm text-gray-600 line-clamp-3">${truncate(stripHtml(a.description), 200)}</p>` : ''}
+        </article>
+      `;
+    }
+
+    function stripHtml(html) {
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      return tmp.textContent || tmp.innerText || '';
+    }
+
+    function truncate(str, n) { return str.length > n ? str.slice(0, n-1) + '…' : str; }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>\"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;','\'':'&#39;'}[s]));
+    }
+
+    function toggleLoading(is) {
+      $('#refreshBtn').disabled = is;
+      $('#refreshBtn').textContent = is ? 'Loading…' : 'Refresh';
+    }
+
+    // ====== Events ======
+    $('#refreshBtn').onclick = loadNews;
+    $('#days').onchange = loadNews;
+
+    // Populate source dropdown initially (before data)
+    (() => {
+      const sel = $('#sourceFilter');
+      sel.innerHTML = '<option value="">All sources</option>' + SOURCES.map(s => `<option>${s.name}</option>`).join('');
+    })();
+
+    // ====== PWA: installable + offline cache (basic) ======
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register(URL.createObjectURL(new Blob([SW_CODE], { type: 'text/javascript' })));
+      });
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = $('#installBtn');
+      btn.classList.remove('hidden');
+      btn.onclick = async () => {
+        btn.classList.add('hidden');
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice; // result dismissed/accepted
+        deferredPrompt = null;
+      };
+    });
+
+    // ====== Boot ======
+    loadNews();
+
+    // ====== Service Worker code (inline as string) ======
+    const SW_CODE = `
+      const CACHE = 'daily-tech-news-v1';
+      self.addEventListener('install', e => {
+        e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./'])));
+      });
+      self.addEventListener('fetch', e => {
+        const url = new URL(e.request.url);
+        if (url.origin === location.origin) {
+          // App shell: network first, fallback to cache
+          e.respondWith(fetch(e.request).then(r => {
+            const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r;
+          }).catch(() => caches.match(e.request)));
+        } else {
+          // External (RSS proxy): stale-while-revalidate
+          e.respondWith(caches.match(e.request).then(cached => {
+            const fetchPromise = fetch(e.request).then(networkResponse => {
+              caches.open(CACHE).then(c => c.put(e.request, networkResponse.clone()));
+              return networkResponse;
+            }).catch(() => cached || Response.error());
+            return cached || fetchPromise;
+          }));
+        }
+      });
+    `;
+  </script>
+</body>
+</html>
