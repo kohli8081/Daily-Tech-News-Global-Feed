@@ -1,455 +1,250 @@
 <!DOCTYPE html>
-<html lang="en" class="transition-colors duration-300">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Daily Tech News — Global Feed</title>
-  <meta name="description" content="A dynamic, auto-updating daily technology news blog that aggregates top stories worldwide." />
-
-  <!-- Make Tailwind use class-based dark mode -->
-  <script>
-    tailwind = window.tailwind || {};
-    tailwind.config = { darkMode: 'class' };
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Color variables & component styles (avoid @apply issues) -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Tech News Blog</title>
   <style>
-    :root{
-      --bg: #f8fafc;
-      --text: #0f172a;
-      --muted: #6b7280;
-      --card-bg: #ffffff;
-      --card-border: #e5e7eb;
-      --tag-bg: #f3f4f6;
-      --tag-text: #0f172a;
-      --input-bg: #ffffff;
-      --input-border: #d1d5db;
-      --btn-bg: #ffffff;
-      --btn-text: #0f172a;
-      --accent: #0f62fe;
-    }
-    html.dark {
-      --bg: #0b1220;
-      --text: #e6eef8;
-      --muted: #9ca3af;
-      --card-bg: #0f1724;
-      --card-border: #1f2937;
-      --tag-bg: #111827;
-      --tag-text: #e6eef8;
-      --input-bg: #0b1220;
-      --input-border: #111827;
-      --btn-bg: #0b1220;
-      --btn-text: #e6eef8;
-      --accent: #60a5fa;
-    }
-
     body {
-      background: var(--bg);
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
       color: var(--text);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      transition: background .25s ease, color .25s ease;
+      transition: background-color 0.3s, color 0.3s;
     }
-
+    :root {
+      --bg: #ffffff;
+      --text: #222222;
+      --card-bg: #f5f5f5;
+      --primary: #0066cc;
+      --secondary: #555;
+    }
+    .dark-mode {
+      --bg: #121212;
+      --text: #f5f5f5;
+      --card-bg: #1e1e1e;
+      --primary: #4ea3ff;
+      --secondary: #bbbbbb;
+    }
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .filters select, .filters input {
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .news-container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 1rem;
+      display: grid;
+      gap: 1rem;
+    }
     .card {
       background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 1rem;
-      padding: 1.25rem;
-      box-shadow: 0 6px 18px rgba(2,6,23,0.04);
-      transition: box-shadow .18s ease, transform .12s ease;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
     }
-    .card:hover { box-shadow: 0 10px 28px rgba(2,6,23,0.06); transform: translateY(-2px); }
-
-    .tag {
-      display:inline-block;
-      font-weight:600;
-      font-size: .72rem;
-      padding: .18rem .5rem;
-      border-radius: 9999px;
-      background: var(--tag-bg);
-      color: var(--tag-text);
-      border: 1px solid var(--card-border);
+    .card:hover {
+      transform: translateY(-3px);
     }
-
-    input[type="search"], select {
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      color: var(--text);
-      padding: .6rem .9rem;
-      border-radius: .75rem;
-      outline: none;
-      transition: box-shadow .12s ease, border-color .12s ease;
+    .card h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      color: var(--primary);
     }
-    input::placeholder { color: var(--muted); }
-    input:focus, select:focus { box-shadow: 0 0 0 4px rgba(15,98,254,0.08); border-color: var(--accent); }
-
-    /* Small utilities */
-    .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-    .fade-in { animation: fade .35s ease both; }
-    @keyframes fade { from { opacity:0; transform:translateY(6px) } to { opacity:1; transform:none } }
-
-    /* Scroll to top button */
-    #scrollTopBtn {
-      position: fixed;
-      right: 20px;
-      bottom: 28px;
-      z-index: 60;
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      display: grid;
-      place-items:center;
-      background: var(--btn-bg);
-      color: var(--btn-text);
-      border: 1px solid var(--card-border);
-      box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+    .card p {
+      margin: 0 0 0.5rem;
+      color: var(--secondary);
+    }
+    .card a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .toggle-theme {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      background: none;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      padding: 0.5rem;
       cursor: pointer;
-      transition: transform .12s ease, opacity .16s ease;
+      color: #fff;
+      transition: background 0.3s;
     }
-    #scrollTopBtn.hidden { opacity: 0; pointer-events: none; transform: translateY(12px) scale(.98); }
-    #scrollTopBtn:focus { outline: 3px solid rgba(15,98,254,0.18); }
-
-    /* Make header and controls responsive spacing tweaks */
-    header .logo { min-width: 40px; min-height: 40px; }
-    @media (max-width:640px) {
-      .grid-auto { gap: .6rem; }
+    .toggle-theme:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    #scrollTopBtn {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+    @media(max-width: 768px) {
+      header h1 {
+        font-size: 1.4rem;
+      }
+      .card h2 {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
-  <header class="sticky top-0 z-50 backdrop-blur bg-white/80 dark:bg-gray-900/70 border-b dark:border-gray-700">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <div class="logo h-10 w-10 rounded-xl bg-black text-white grid place-items-center font-bold">TN</div>
-        <div>
-          <h1 class="text-lg md:text-2xl font-bold leading-tight">Daily Tech News — Global</h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Fresh tech headlines every day, from trusted sources worldwide.</p>
-        </div>
-      </div>
-
-      <!-- Theme toggle -->
-      <div class="flex items-center gap-3">
-        <button id="themeToggle"
-          class="p-2 rounded-xl border focus:ring-2 focus:ring-offset-2"
-          title="Toggle theme"
-          aria-pressed="false"
-          aria-label="Toggle dark mode"
-          >
-          <!-- icon set by JS -->
-        </button>
-      </div>
+  <header>
+    <h1>Daily Tech News Blog</h1>
+    <button class="toggle-theme" id="themeToggle">🌙</button>
+    <div class="filters">
+      <input type="text" id="search" placeholder="Search news...">
+      <select id="countryFilter"></select>
+      <select id="dateFilter">
+        <option value="today">Today</option>
+        <option value="3days">Last 3 Days</option>
+        <option value="7days">Last 7 Days</option>
+      </select>
     </div>
   </header>
-
-  <main class="max-w-6xl mx-auto px-4 pt-6 pb-20">
-    <!-- Indian Tech News Section -->
-    <section id="indian-news" class="mb-8"></section>
-
-    <!-- Controls -->
-    <section class="mb-6 flex flex-col md:flex-row gap-3 md:items-center">
-      <div class="flex-1 flex flex-wrap gap-2">
-        <input id="search" type="search" placeholder="Search headlines (AI, Apple, cybersecurity, etc.)" class="flex-1 min-w-[200px]" />
-        <select id="sourceFilter" class="px-3 py-2.5 rounded-xl min-w-[160px]">
-          <option value="">All sources</option>
-        </select>
-        <select id="countryFilter" class="px-3 py-2.5 rounded-xl min-w-[160px]">
-          <option value="">All countries</option>
-          <option value="India">India</option>
-          <option value="Global">Global</option>
-        </select>
-      </div>
-
-      <div class="flex gap-2">
-        <select id="days" class="px-3 py-2.5 rounded-xl">
-          <option value="1">Today</option>
-          <option value="3" selected>Last 3 days</option>
-          <option value="7">Last 7 days</option>
-        </select>
-        <button id="refreshBtn" class="px-4 py-2.5 rounded-xl border font-semibold">Refresh</button>
-      </div>
-    </section>
-
-    <!-- Daily Digest -->
-    <section id="digest" class="mb-8"></section>
-
-    <!-- News groups by day -->
-    <section id="news" class="space-y-8"></section>
-
-    <footer class="mt-16 text-center text-sm text-gray-500 dark:text-gray-400">
-      <p>Built with vanilla JS + RSS. Sources: TechCrunch, The Verge, Ars Technica, Engadget, WIRED, Hacker News, Gadgets360 India, NDTV Tech.</p>
-    </footer>
-  </main>
-
-  <!-- Scroll to top -->
-  <button id="scrollTopBtn" class="hidden" aria-label="Scroll to top">↑</button>
+  <main class="news-container" id="news"></main>
+  <button id="scrollTopBtn">↑</button>
 
   <script>
-    // ---------------------
-    // Theme toggle: reliable & persistent
-    // ---------------------
-    const rootEl = document.documentElement;
-    const themeBtn = document.getElementById('themeToggle');
+    const PROXY = "https://api.allorigins.win/get?url=";
+    const SOURCES = {
+      'India': [
+        'https://gadgets360.com/rss/news',
+        'https://feeds.feedburner.com/ndtvgadgets-news'
+      ],
+      'US': [
+        'https://www.theverge.com/rss/index.xml',
+        'https://feeds.arstechnica.com/arstechnica/technology'
+      ],
+      'UK': [
+        'https://www.wired.co.uk/feed/rss'
+      ],
+      'Global': [
+        'https://techcrunch.com/feed/',
+        'https://www.engadget.com/rss.xml',
+        'https://hnrss.org/frontpage'
+      ]
+    };
 
-    function applyThemeIcon() {
-      const isDark = rootEl.classList.contains('dark');
-      themeBtn.textContent = isDark ? '☀️' : '🌙';
-      themeBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-      themeBtn.style.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--card-border');
-      themeBtn.style.background = getComputedStyle(document.documentElement).getPropertyValue('--btn-bg');
-      themeBtn.style.color = getComputedStyle(document.documentElement).getPropertyValue('--btn-text');
-    }
+    const countrySelect = document.getElementById('countryFilter');
+    const searchInput = document.getElementById('search');
+    const dateFilter = document.getElementById('dateFilter');
+    const newsContainer = document.getElementById('news');
 
-    // On load, prefer saved theme; else leave system default
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') rootEl.classList.add('dark');
-    else if (savedTheme === 'light') rootEl.classList.remove('dark');
-    // If no savedTheme, do not force; allow OS preference to apply via Tailwind's default (we set class-based but do not override if not stored).
-
-    applyThemeIcon();
-
-    themeBtn.addEventListener('click', () => {
-      rootEl.classList.toggle('dark');
-      const isDarkNow = rootEl.classList.contains('dark');
-      localStorage.setItem('theme', isDarkNow ? 'dark' : 'light');
-      applyThemeIcon();
+    Object.keys(SOURCES).forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
     });
+    const allOpt = document.createElement('option');
+    allOpt.value = 'All';
+    allOpt.textContent = 'All Countries';
+    countrySelect.insertBefore(allOpt, countrySelect.firstChild);
+    countrySelect.value = 'All';
 
-    // ---------------------
-    // Scroll to top button
-    // ---------------------
-    const scrollBtn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 320) scrollBtn.classList.remove('hidden');
-      else scrollBtn.classList.add('hidden');
-    });
-    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-    // ---------------------
-    // News fetching & rendering (unchanged features)
-    // ---------------------
-    const SOURCES = [
-      { name: 'Gadgets360 India', url: 'https://feeds.feedburner.com/gadgets360-latest', country: 'India' },
-      { name: 'NDTV Tech', url: 'https://feeds.feedburner.com/ndtvnews-ndtvtech', country: 'India' },
-      { name: 'TechCrunch', url: 'https://techcrunch.com/feed/', country: 'Global' },
-      { name: 'The Verge', url: 'https://www.theverge.com/tech/rss/index.xml', country: 'Global' },
-      { name: 'Ars Technica', url: 'https://feeds.arstechnica.com/arstechnica/technology-lab', country: 'Global' },
-      { name: 'Engadget', url: 'https://www.engadget.com/rss.xml', country: 'Global' },
-      { name: 'WIRED', url: 'https://www.wired.com/feed/rss', country: 'Global' },
-      { name: 'Hacker News', url: 'https://hnrss.org/frontpage', country: 'Global' },
-    ];
-    const PROXY = 'https://api.allorigins.win/raw?url=';
-    const $ = s => document.querySelector(s);
-
-    function uniqueBy(arr, keyFn) {
-      const seen = new Set();
-      return arr.filter(item => {
-        const k = keyFn(item);
-        if (seen.has(k)) return false;
-        seen.add(k);
-        return true;
-      });
-    }
-
-    function parseRSS(xmlText, source) {
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(xmlText, 'text/xml');
-
-      const items = [...xml.querySelectorAll('item')].map(el => ({
-        title: el.querySelector('title')?.textContent?.trim() || 'Untitled',
-        link: el.querySelector('link')?.textContent?.trim() || '#',
-        pubDate: new Date(el.querySelector('pubDate')?.textContent || Date.now()),
-        source: source.name,
-        country: source.country,
-        description: el.querySelector('description')?.textContent || '',
-      }));
-
-      // also handle Atom <entry> if present
-      const entries = [...xml.querySelectorAll('entry')].map(el => ({
-        title: el.querySelector('title')?.textContent?.trim() || 'Untitled',
-        link: el.querySelector('link')?.getAttribute('href') || '#',
-        pubDate: new Date(el.querySelector('updated')?.textContent || el.querySelector('published')?.textContent || Date.now()),
-        source: source.name,
-        country: source.country,
-        description: el.querySelector('summary')?.textContent || el.querySelector('content')?.textContent || '',
-      }));
-
-      return [...items, ...entries];
-    }
-
-    async function fetchFeed(src) {
-      const url = PROXY + encodeURIComponent(src.url);
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('Fetch failed for ' + src.name);
-      const txt = await res.text();
-      return parseRSS(txt, src);
+    async function fetchRSS(url) {
+      try {
+        const res = await fetch(PROXY + encodeURIComponent(url));
+        const data = await res.json();
+        const parser = new DOMParser();
+        return parser.parseFromString(data.contents, "text/xml");
+      } catch(e) {
+        console.error("Error fetching", url, e);
+        return null;
+      }
     }
 
     async function loadNews() {
-      toggleLoading(true);
-      const daysBack = parseInt($('#days').value, 10);
+      newsContainer.innerHTML = '';
+      let selectedCountry = countrySelect.value;
+      let searchTerm = searchInput.value.toLowerCase();
+      let daysLimit = dateFilter.value;
+      let cutoff = new Date();
+      if(daysLimit==='3days') cutoff.setDate(cutoff.getDate()-3);
+      else if(daysLimit==='7days') cutoff.setDate(cutoff.getDate()-7);
 
-      const results = await Promise.allSettled(SOURCES.map(fetchFeed));
-      let articles = [];
-      results.forEach((r, i) => {
-        if (r.status === 'fulfilled') articles = articles.concat(r.value);
-        else console.warn('Failed feed:', SOURCES[i].name, r.reason);
-      });
+      let countriesToShow = selectedCountry==='All'? Object.keys(SOURCES): [selectedCountry];
 
-      const now = new Date();
-      const cutoff = new Date(now.getTime() - daysBack*24*60*60*1000);
-      articles = articles.filter(a => a.pubDate >= cutoff);
-      articles = uniqueBy(articles, a => (a.title || '') + '|' + (a.source || ''));
-      articles.sort((a, b) => b.pubDate - a.pubDate);
+      // Always show India first
+      const order = countriesToShow.includes('India')? ['India', ...countriesToShow.filter(c=>c!=='India')]: ['India', ...countriesToShow];
 
-      renderIndianNews(articles);
-      renderDigest(articles);
-      renderByDay(articles);
-      toggleLoading(false);
-    }
+      for(const country of order){
+        for(const url of SOURCES[country] || []){
+          const xml = await fetchRSS(url);
+          if(!xml) continue;
+          const items = xml.querySelectorAll('item');
+          items.forEach(item=>{
+            const title = item.querySelector('title')?.textContent;
+            const link = item.querySelector('link')?.textContent;
+            const pubDate = new Date(item.querySelector('pubDate')?.textContent);
+            const desc = item.querySelector('description')?.textContent;
+            if(pubDate < cutoff) return;
+            if(searchTerm && !title.toLowerCase().includes(searchTerm)) return;
 
-    function renderIndianNews(articles) {
-      const container = $('#indian-news');
-      const indianArticles = articles.filter(a => a.country === 'India');
-      if (!indianArticles.length) { container.innerHTML = ''; return; }
-
-      const list = indianArticles.slice(0, 6).map(a => `
-        <li class="flex gap-3 items-start">
-          <span class="tag">${a.source}</span>
-          <a class="underline decoration-dotted hover:no-underline" href="${a.link}" target="_blank" rel="noopener">${escapeHtml(a.title)}</a>
-        </li>`).join('');
-
-      container.innerHTML = `
-        <div class="card fade-in">
-          <h2 class="text-lg md:text-xl font-bold mb-2">🇮🇳 Indian Tech News</h2>
-          <ul class="space-y-2">${list}</ul>
-        </div>`;
-    }
-
-    function renderDigest(articles) {
-      const container = $('#digest');
-      container.innerHTML = '';
-      if (!articles.length) return;
-      const latestDay = articles[0].pubDate.toLocaleDateString();
-      const dayArticles = articles.filter(a => a.pubDate.toLocaleDateString() === latestDay).slice(0, 10);
-      const bullets = dayArticles.map(a => `
-        <li class="flex gap-3 items-start">
-          <span class="tag">${a.source}</span>
-          <a class="underline decoration-dotted hover:no-underline" href="${a.link}" target="_blank" rel="noopener">${escapeHtml(a.title)}</a>
-        </li>`).join('');
-
-      container.innerHTML = `
-        <div class="card fade-in">
-          <h2 class="text-lg md:text-xl font-bold mb-2">Daily Tech Digest — ${latestDay}</h2>
-          <ul class="space-y-2">${bullets}</ul>
-        </div>`;
-    }
-
-    function renderByDay(articles) {
-      const wrap = $('#news');
-      wrap.innerHTML = '';
-
-      if (!articles.length) {
-        wrap.innerHTML = `<div class="text-center text-gray-500 dark:text-gray-400 card">No stories found for the selected range or filters.</div>`;
-        return;
-      }
-
-      // repopulate source filter (keeps it dynamic)
-      const sourceSel = $('#sourceFilter');
-      const sources = Array.from(new Set(articles.map(a => a.source))).sort();
-      sourceSel.innerHTML = '<option value=\"\">All sources</option>' + sources.map(s => `<option>${s}</option>`).join('');
-
-      // apply search + source + country filter
-      const q = $('#search').value.trim().toLowerCase();
-      const s = $('#sourceFilter').value;
-      const countrySel = $('#countryFilter').value;
-
-      let filtered = articles.filter(a => (!s || a.source === s) && (!countrySel || a.country === countrySel) && (!q || a.title.toLowerCase().includes(q)));
-
-      // group by date
-      const groups = {};
-      for (const a of filtered) {
-        const key = a.pubDate.toDateString();
-        (groups[key] ||= []).push(a);
-      }
-      const days = Object.keys(groups).sort((a,b) => new Date(b) - new Date(a));
-      for (const d of days) {
-        const list = groups[d].sort((a,b) => b.pubDate - a.pubDate);
-        const cards = list.map(a => ArticleCard(a)).join('');
-        const section = document.createElement('section');
-        section.className = 'space-y-4 fade-in';
-        section.innerHTML = `
-          <div class="flex items-end justify-between">
-            <h3 class="text-lg md:text-xl font-bold">${d}</h3>
-            <span class="text-xs text-gray-500 dark:text-gray-400">${list.length} posts</span>
-          </div>
-          <div class="grid-auto">${cards}</div>`;
-        wrap.appendChild(section);
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `<h2>${title}</h2><p>${desc || ''}</p><a href="${link}" target="_blank">Read more</a><p><small>${country} • ${pubDate.toDateString()}</small></p>`;
+            newsContainer.appendChild(card);
+          });
+        }
       }
     }
 
-    function ArticleCard(a) {
-      const timeStr = (a.pubDate && !isNaN(a.pubDate)) ? a.pubDate.toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }) : '';
-      const desc = a.description ? `<p class="mt-2 text-sm text-gray-600 dark:text-gray-400 line-clamp-3">${truncate(stripHtml(a.description), 200)}</p>` : '';
-      return `
-        <article class="card">
-          <div class="flex items-start justify-between gap-3 mb-2">
-            <div class="flex items-center gap-2">
-              <span class="tag">${a.source}</span>
-              <small class="text-xs text-gray-500 dark:text-gray-400">${timeStr}</small>
-            </div>
-            <span class="tag">${a.country}</span>
-          </div>
-          <a class="block text-base md:text-lg font-semibold hover:underline" href="${a.link}" target="_blank" rel="noopener">${escapeHtml(a.title)}</a>
-          ${desc}
-        </article>`;
-    }
+    searchInput.addEventListener('input', loadNews);
+    dateFilter.addEventListener('change', loadNews);
+    countrySelect.addEventListener('change', loadNews);
 
-    function stripHtml(html) {
-      const tmp = document.createElement('div'); tmp.innerHTML = html; return tmp.textContent || tmp.innerText || '';
-    }
-    function truncate(s,n){ return s.length>n? s.slice(0,n-1)+'…': s; }
-    function escapeHtml(str){ return (str||'').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s])); }
-
-    function toggleLoading(is) {
-      $('#refreshBtn').disabled = is;
-      $('#refreshBtn').textContent = is ? 'Loading…' : 'Refresh';
-    }
-
-    // events
-    $('#refreshBtn').addEventListener('click', loadNews);
-    $('#days').addEventListener('change', loadNews);
-    $('#countryFilter').addEventListener('change', loadNews);
-    $('#search').addEventListener('input', () => requestAnimationFrame(() => renderByDay(lastArticles || [])));
-    $('#sourceFilter').addEventListener('change', () => requestAnimationFrame(() => renderByDay(lastArticles || [])));
-
-    // keep last articles in memory for client-side filtering
-    let lastArticles = [];
-
-    // load & cache
-    async function loadNews() {
-      toggleLoading(true);
-      const daysBack = parseInt($('#days').value, 10);
-      const results = await Promise.allSettled(SOURCES.map(fetchFeed));
-      let articles = [];
-      results.forEach((r,i)=>{ if (r.status==='fulfilled') articles = articles.concat(r.value); else console.warn('feed fail',SOURCES[i].name); });
-      const now = new Date();
-      const cutoff = new Date(now.getTime() - daysBack*24*60*60*1000);
-      articles = articles.filter(a => a.pubDate >= cutoff);
-      articles = uniqueBy(articles, a => (a.title||'')+'|'+(a.source||''));
-      articles.sort((a,b)=> b.pubDate - a.pubDate);
-      lastArticles = articles;
-
-      renderIndianNews(articles);
-      renderDigest(articles);
-      renderByDay(articles);
-      toggleLoading(false);
-    }
-
-    // initial load
     loadNews();
+
+    // Theme Toggle
+    const toggle = document.getElementById('themeToggle');
+    toggle.addEventListener('click', ()=>{
+      document.body.classList.toggle('dark-mode');
+      toggle.textContent = document.body.classList.contains('dark-mode')? '☀️':'🌙';
+    });
+
+    // Scroll to top button
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    window.onscroll = ()=>{
+      scrollBtn.style.display = (document.documentElement.scrollTop>100)? 'block':'none';
+    };
+    scrollBtn.onclick = ()=>{
+      document.documentElement.scrollTop=0;
+    };
   </script>
 </body>
 </html>
