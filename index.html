@@ -1,250 +1,425 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily Tech News Blog</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Daily Tech News — Country Filter + India Top</title>
+  <meta name="description" content="Aggregated daily tech news — choose a country, see India pinned on top." />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      transition: background-color 0.3s, color 0.3s;
+    :root{
+      --bg:#f7fafc; --card:#ffffff; --muted:#6b7280; --text:#0f172a; --accent:#0f62fe;
+      --card-border:#e6e9ef; --tag:#eef2ff;
     }
-    :root {
-      --bg: #ffffff;
-      --text: #222222;
-      --card-bg: #f5f5f5;
-      --primary: #0066cc;
-      --secondary: #555;
-    }
-    .dark-mode {
-      --bg: #121212;
-      --text: #f5f5f5;
-      --card-bg: #1e1e1e;
-      --primary: #4ea3ff;
-      --secondary: #bbbbbb;
-    }
-    header {
-      background: var(--primary);
-      color: #fff;
-      padding: 1rem;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.8rem;
-    }
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .filters select, .filters input {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    .news-container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 1rem;
-      display: grid;
-      gap: 1rem;
-    }
-    .card {
-      background: var(--card-bg);
-      padding: 1rem;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-    }
-    .card h2 {
-      margin: 0 0 0.5rem;
-      font-size: 1.2rem;
-      color: var(--primary);
-    }
-    .card p {
-      margin: 0 0 0.5rem;
-      color: var(--secondary);
-    }
-    .card a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-    .toggle-theme {
-      position: absolute;
-      right: 1rem;
-      top: 1rem;
-      background: none;
-      border: 2px solid #fff;
-      border-radius: 50%;
-      padding: 0.5rem;
-      cursor: pointer;
-      color: #fff;
-      transition: background 0.3s;
-    }
-    .toggle-theme:hover {
-      background: rgba(255,255,255,0.2);
-    }
-    #scrollTopBtn {
-      display: none;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 100;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 18px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-    @media(max-width: 768px) {
-      header h1 {
-        font-size: 1.4rem;
-      }
-      .card h2 {
-        font-size: 1rem;
-      }
-    }
+    html.dark{ --bg:#071029; --card:#071329; --muted:#94a3b8; --text:#e6eef8; --accent:#60a5fa; --card-border:#0f1724; --tag:#0b2133; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, Arial;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+    header{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--card),rgba(255,255,255,0.5));backdrop-filter:saturate(120%) blur(6px);border-bottom:1px solid var(--card-border)}
+    .bar{max-width:1100px;margin:0 auto;padding:14px;display:flex;align-items:center;gap:12px;justify-content:space-between}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#2563eb);display:grid;place-items:center;color:white;font-weight:700}
+    .title{font-weight:700;font-size:1.05rem}
+    .subtitle{font-size:0.82rem;color:var(--muted)}
+    .controls{max-width:1100px;margin:14px auto;padding:0 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .input, select{padding:10px 12px;border-radius:10px;border:1px solid var(--card-border);background:var(--card);color:var(--text);min-width:160px}
+    .search{flex:1;min-width:180px}
+    .btn{padding:10px 14px;border-radius:10px;border:1px solid var(--card-border);background:var(--card);cursor:pointer}
+    .container{max-width:1100px;margin:18px auto;padding:0 14px 80px;display:grid;gap:18px}
+    .card{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.04)}
+    .india-section .card{border-left:4px solid #f59e0b}
+    .card h3{margin:0;font-size:1rem}
+    .meta{font-size:12px;color:var(--muted);margin-top:6px}
+    .grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+    .tag{display:inline-block;font-size:12px;padding:6px 8px;border-radius:999px;background:var(--tag);color:var(--text);border:1px solid var(--card-border);margin-right:8px}
+    .desc{color:var(--muted);margin-top:8px;font-size:0.92rem;line-height:1.3}
+    .row{display:flex;align-items:center;gap:8px;justify-content:space-between}
+    .small{font-size:12px;color:var(--muted)}
+    .floating{position:fixed;right:18px;bottom:28px;z-index:60;width:46px;height:46px;border-radius:10px;border:1px solid var(--card-border);background:var(--card);display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 24px rgba(2,6,23,0.08)}
+    .hidden{display:none}
+    .loader{display:inline-block;border:3px solid rgba(0,0,0,0.08);border-left-color:var(--accent);border-radius:999px;width:18px;height:18px;animation:spin .9s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:640px){ .bar{padding:12px} .title{font-size:0.98rem} .controls{gap:8px} }
   </style>
 </head>
 <body>
   <header>
-    <h1>Daily Tech News Blog</h1>
-    <button class="toggle-theme" id="themeToggle">🌙</button>
-    <div class="filters">
-      <input type="text" id="search" placeholder="Search news...">
-      <select id="countryFilter"></select>
-      <select id="dateFilter">
-        <option value="today">Today</option>
-        <option value="3days">Last 3 Days</option>
-        <option value="7days">Last 7 Days</option>
-      </select>
+    <div class="bar">
+      <div class="brand">
+        <div class="logo">TN</div>
+        <div>
+          <div class="title">Daily Tech News</div>
+          <div class="subtitle">Latest tech headlines — choose a country. India pinned on top.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button id="themeToggle" class="btn" aria-label="Toggle theme">🌙</button>
+        <button id="refreshBtn" class="btn" aria-label="Refresh feeds">Refresh</button>
+      </div>
     </div>
   </header>
-  <main class="news-container" id="news"></main>
-  <button id="scrollTopBtn">↑</button>
+
+  <section class="controls" aria-label="filters">
+    <input id="search" class="input search" placeholder="Search headlines (AI, smartphones, security)"/>
+    <select id="country" class="input" title="Choose country"></select>
+    <select id="date" class="input" title="Date range">
+      <option value="1">Today</option>
+      <option value="3" selected>Last 3 days</option>
+      <option value="7">Last 7 days</option>
+    </select>
+    <select id="source" class="input" title="Source (auto populated)">
+      <option value="">All sources</option>
+    </select>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+      <div id="status" class="small">Idle</div>
+    </div>
+  </section>
+
+  <main class="container">
+    <!-- India pinned -->
+    <section id="indiaPinned" class="india-section"></section>
+
+    <!-- Digest -->
+    <section id="digest"></section>
+
+    <!-- News by day -->
+    <section id="news"></section>
+  </main>
+
+  <button id="scrollTop" class="floating hidden" title="Scroll to top">↑</button>
 
   <script>
-    const PROXY = "https://api.allorigins.win/get?url=";
-    const SOURCES = {
+  (function(){
+    // ---------- Configuration ----------
+    const PROXY = 'https://api.allorigins.win/raw?url='; // returns raw text
+    // FEEDS_BY_COUNTRY: add feeds for countries you want; if a country not listed, fallback to GLOBAL_FEEDS
+    const FEEDS_BY_COUNTRY = {
       'India': [
-        'https://gadgets360.com/rss/news',
-        'https://feeds.feedburner.com/ndtvgadgets-news'
+        'https://feeds.feedburner.com/gadgets360-latest',
+        'https://feeds.feedburner.com/ndtvnews-ndtvtech'
       ],
-      'US': [
+      'United States': [
+        'https://techcrunch.com/feed/',
         'https://www.theverge.com/rss/index.xml',
-        'https://feeds.arstechnica.com/arstechnica/technology'
+        'https://feeds.arstechnica.com/arstechnica/technology',
+        'https://www.wired.com/feed/rss'
       ],
-      'UK': [
+      'United Kingdom': [
+        'https://www.theguardian.com/uk/technology/rss',
         'https://www.wired.co.uk/feed/rss'
       ],
       'Global': [
         'https://techcrunch.com/feed/',
+        'https://www.theverge.com/rss/index.xml',
         'https://www.engadget.com/rss.xml',
+        'https://www.wired.com/feed/rss',
         'https://hnrss.org/frontpage'
-      ]
+      ],
+      // add more country-specific feeds here if you want to expand mapping
     };
+    const GLOBAL_FEEDS = FEEDS_BY_COUNTRY['Global'];
 
-    const countrySelect = document.getElementById('countryFilter');
-    const searchInput = document.getElementById('search');
-    const dateFilter = document.getElementById('dateFilter');
-    const newsContainer = document.getElementById('news');
+    // Full country list (most recognized countries). This populates the dropdown.
+    const COUNTRIES = [
+      "All","Global","Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan",
+      "Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi",
+      "Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Costa Rica","Côte d'Ivoire","Croatia","Cuba","Cyprus","Czech Republic",
+      "Democratic Republic of the Congo","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia",
+      "Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India",
+      "Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho",
+      "Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia",
+      "Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea",
+      "North Macedonia","Norway","Oman","Pakistan","Palau","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda",
+      "Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone",
+      "Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria",
+      "Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates",
+      "United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
+    ];
 
-    Object.keys(SOURCES).forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c;
-      opt.textContent = c;
-      countrySelect.appendChild(opt);
+    // ---------- Elements ----------
+    const countryEl = document.getElementById('country');
+    const dateEl = document.getElementById('date');
+    const searchEl = document.getElementById('search');
+    const sourceEl = document.getElementById('source');
+    const statusEl = document.getElementById('status');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const themeBtn = document.getElementById('themeToggle');
+    const indiaPinned = document.getElementById('indiaPinned');
+    const digestEl = document.getElementById('digest');
+    const newsEl = document.getElementById('news');
+    const scrollTop = document.getElementById('scrollTop');
+
+    // populate countries
+    COUNTRIES.forEach(c => {
+      const opt = document.createElement('option'); opt.value = c; opt.textContent = c; countryEl.appendChild(opt);
     });
-    const allOpt = document.createElement('option');
-    allOpt.value = 'All';
-    allOpt.textContent = 'All Countries';
-    countrySelect.insertBefore(allOpt, countrySelect.firstChild);
-    countrySelect.value = 'All';
+    countryEl.value = 'All';
 
-    async function fetchRSS(url) {
-      try {
+    // theme toggle (persist)
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') root.classList.add('dark');
+    themeBtn.textContent = root.classList.contains('dark')? '☀️' : '🌙';
+    themeBtn.addEventListener('click', () => {
+      root.classList.toggle('dark');
+      localStorage.setItem('theme', root.classList.contains('dark')? 'dark' : 'light');
+      themeBtn.textContent = root.classList.contains('dark')? '☀️' : '🌙';
+    });
+
+    // scroll top visibility
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 280) scrollTop.classList.remove('hidden'); else scrollTop.classList.add('hidden');
+    });
+    scrollTop.addEventListener('click', () => window.scrollTo({top:0,behavior:'smooth'}));
+
+    // ---------- Helpers ----------
+    function safeText(node){ return node ? node.textContent.trim() : ''; }
+    function getLink(item){
+      // try common variants
+      const linkTag = item.querySelector('link');
+      if(linkTag){
+        // Atom style: <link href="...">
+        const href = linkTag.getAttribute && linkTag.getAttribute('href');
+        if(href) return href;
+        if(linkTag.textContent && linkTag.textContent.trim()) return linkTag.textContent.trim();
+      }
+      // enclosure or guid fallback
+      const enclosure = item.querySelector('enclosure');
+      if(enclosure && enclosure.getAttribute('url')) return enclosure.getAttribute('url');
+      const guid = item.querySelector('guid');
+      if(guid) return guid.textContent.trim();
+      // for Atom <link rel="alternate">
+      const alt = [...item.querySelectorAll('link')].find(l => l.getAttribute && (l.getAttribute('rel')==='alternate' || !l.getAttribute('rel')));
+      if(alt && alt.getAttribute) return alt.getAttribute('href') || alt.textContent || '#';
+      return '#';
+    }
+    function stripHtml(html){ const tmp = document.createElement('div'); tmp.innerHTML = html||''; return tmp.textContent||tmp.innerText||''; }
+    function uniqBy(arr, key){ const s=new Set(); return arr.filter(x=>{ const k=key(x); if(s.has(k)) return false; s.add(k); return true; }); }
+
+    // parse RSS/Atom text -> items array
+    function parseFeed(text, countryName, feedUrl){
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(text, 'text/xml');
+      const items = [];
+      // RSS items
+      xml.querySelectorAll('item').forEach(it=>{
+        const title = safeText(it.querySelector('title'));
+        const link = getLink(it);
+        const pubDate = new Date(safeText(it.querySelector('pubDate')) || Date.now());
+        const desc = stripHtml(safeText(it.querySelector('description')) || safeText(it.querySelector('content')));
+        items.push({ title, link, pubDate, description: desc, source: feedUrl, country: countryName });
+      });
+      // Atom entries
+      xml.querySelectorAll('entry').forEach(it=>{
+        const title = safeText(it.querySelector('title'));
+        const link = getLink(it);
+        const pubDate = new Date(safeText(it.querySelector('updated')) || safeText(it.querySelector('published')) || Date.now());
+        const desc = stripHtml(safeText(it.querySelector('summary')) || safeText(it.querySelector('content')));
+        items.push({ title, link, pubDate, description: desc, source: feedUrl, country: countryName });
+      });
+      return items;
+    }
+
+    async function fetchFeedRaw(url){
+      try{
         const res = await fetch(PROXY + encodeURIComponent(url));
-        const data = await res.json();
-        const parser = new DOMParser();
-        return parser.parseFromString(data.contents, "text/xml");
-      } catch(e) {
-        console.error("Error fetching", url, e);
+        if(!res.ok) throw new Error('bad response');
+        const text = await res.text();
+        return text;
+      }catch(e){
+        console.warn('feed error', url, e);
         return null;
       }
     }
 
-    async function loadNews() {
-      newsContainer.innerHTML = '';
-      let selectedCountry = countrySelect.value;
-      let searchTerm = searchInput.value.toLowerCase();
-      let daysLimit = dateFilter.value;
-      let cutoff = new Date();
-      if(daysLimit==='3days') cutoff.setDate(cutoff.getDate()-3);
-      else if(daysLimit==='7days') cutoff.setDate(cutoff.getDate()-7);
+    // ---------- Main fetch & render ----------
+    let lastArticles = [];
 
-      let countriesToShow = selectedCountry==='All'? Object.keys(SOURCES): [selectedCountry];
+    async function loadFeeds(){
+      statusEl.innerHTML = '<span class="loader"></span> Loading...';
+      refreshBtn.disabled = true;
 
-      // Always show India first
-      const order = countriesToShow.includes('India')? ['India', ...countriesToShow.filter(c=>c!=='India')]: ['India', ...countriesToShow];
+      const days = parseInt(dateEl.value,10) || 3;
+      const cutoff = new Date(Date.now() - days*24*60*60*1000);
 
-      for(const country of order){
-        for(const url of SOURCES[country] || []){
-          const xml = await fetchRSS(url);
-          if(!xml) continue;
-          const items = xml.querySelectorAll('item');
-          items.forEach(item=>{
-            const title = item.querySelector('title')?.textContent;
-            const link = item.querySelector('link')?.textContent;
-            const pubDate = new Date(item.querySelector('pubDate')?.textContent);
-            const desc = item.querySelector('description')?.textContent;
-            if(pubDate < cutoff) return;
-            if(searchTerm && !title.toLowerCase().includes(searchTerm)) return;
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `<h2>${title}</h2><p>${desc || ''}</p><a href="${link}" target="_blank">Read more</a><p><small>${country} • ${pubDate.toDateString()}</small></p>`;
-            newsContainer.appendChild(card);
-          });
+      // determine selected feeds:
+      const selectedCountry = countryEl.value;
+      // Build feedsToFetch: always include India feeds for pinned top
+      const feedsToFetch = new Map(); // feedUrl -> countryName
+      const addFeedsFor = (country) => {
+        const feeds = FEEDS_BY_COUNTRY[country];
+        if(feeds && feeds.length){
+          feeds.forEach(f => feedsToFetch.set(f, country));
         }
+      };
+      addFeedsFor('India'); // always pinned
+      if(selectedCountry === 'All' || selectedCountry === 'Global') {
+        // include global
+        FEEDS_BY_COUNTRY['Global'].forEach(f => feedsToFetch.set(f, 'Global'));
+      } else {
+        // include feeds mapped for selected country if present; otherwise include global
+        if(FEEDS_BY_COUNTRY[selectedCountry]) addFeedsFor(selectedCountry);
+        else FEEDS_BY_COUNTRY['Global'].forEach(f => feedsToFetch.set(f, 'Global'));
       }
+
+      // fetch concurrently
+      const feedEntries = await Promise.allSettled(Array.from(feedsToFetch.entries()).map(async ([feedUrl, countryName])=>{
+        const raw = await fetchFeedRaw(feedUrl);
+        if(!raw) return [];
+        return parseFeed(raw, countryName, feedUrl);
+      }));
+
+      // collect articles
+      let articles = [];
+      feedEntries.forEach(r => {
+        if(r.status === 'fulfilled' && Array.isArray(r.value)) articles = articles.concat(r.value);
+      });
+
+      // filter by cutoff
+      articles = articles.filter(a => a.pubDate && a.pubDate >= cutoff);
+
+      // If selected country is specified and it has feeds, show only articles from that country (or from Global if country=Global)
+      if(selectedCountry !== 'All' && selectedCountry !== 'Global' && FEEDS_BY_COUNTRY[selectedCountry]) {
+        articles = articles.filter(a => a.country === selectedCountry || a.country === 'India'); // also keep India pinned
+      }
+
+      // dedupe by title+link
+      articles = uniqBy(articles, a => (a.title||'') + '|' + (a.link||''));
+
+      // sort desc
+      articles.sort((a,b) => b.pubDate - a.pubDate);
+
+      lastArticles = articles;
+      renderAll(articles);
+      statusEl.textContent = `Loaded ${articles.length} articles`;
+      refreshBtn.disabled = false;
     }
 
-    searchInput.addEventListener('input', loadNews);
-    dateFilter.addEventListener('change', loadNews);
-    countrySelect.addEventListener('change', loadNews);
+    // ---------- Rendering ----------
+    function clearNode(n){ while(n.firstChild) n.removeChild(n.firstChild); }
 
-    loadNews();
+    function renderAll(articles){
+      // India pinned on top
+      const indiaArticles = articles.filter(a => a.country === 'India').slice(0,6);
+      renderIndia(indiaArticles);
 
-    // Theme Toggle
-    const toggle = document.getElementById('themeToggle');
-    toggle.addEventListener('click', ()=>{
-      document.body.classList.toggle('dark-mode');
-      toggle.textContent = document.body.classList.contains('dark-mode')? '☀️':'🌙';
+      // Digest: top 6 recent overall
+      renderDigest(articles.slice(0,6));
+
+      // Group remaining by day and show (but exclude articles already shown in pinned if duplicates)
+      const shown = new Set(indiaArticles.map(a=>a.link));
+      const remaining = articles.filter(a => !shown.has(a.link));
+      renderByDay(remaining);
+      populateSourceFilter(articles);
+    }
+
+    function renderIndia(list){
+      clearNode(indiaPinned);
+      if(!list.length) return;
+      const card = document.createElement('div'); card.className='card';
+      const h = document.createElement('h3'); h.textContent = '🇮🇳 Indian Tech — Top';
+      card.appendChild(h);
+      const ul = document.createElement('div'); ul.style.marginTop='10px';
+      list.forEach(a=>{
+        const row = document.createElement('div'); row.style.marginBottom='10px';
+        const title = document.createElement('a'); title.href = a.link; title.target='_blank'; title.rel='noopener'; title.style.fontWeight='600';
+        title.textContent = a.title || 'Untitled';
+        const meta = document.createElement('div'); meta.className='meta'; meta.textContent = `${a.source.replace(/^https?:\/\//,'')} • ${a.pubDate.toLocaleString()}`;
+        const desc = document.createElement('div'); desc.className='desc'; desc.textContent = a.description ? (a.description.length>220? a.description.slice(0,220)+'…': a.description) : '';
+        row.appendChild(title); row.appendChild(meta); if(a.description) row.appendChild(desc); ul.appendChild(row);
+      });
+      card.appendChild(ul);
+      indiaPinned.appendChild(card);
+    }
+
+    function renderDigest(list){
+      clearNode(digestEl);
+      if(!list.length) return;
+      const card = document.createElement('div'); card.className='card';
+      const h = document.createElement('h3'); h.textContent = 'Daily Digest';
+      card.appendChild(h);
+      const ul = document.createElement('div'); ul.style.marginTop='10px';
+      list.forEach(a=>{
+        const item = document.createElement('div'); item.style.marginBottom='8px';
+        const link = document.createElement('a'); link.href = a.link; link.target='_blank'; link.rel='noopener'; link.textContent = a.title;
+        const meta = document.createElement('div'); meta.className='meta'; meta.textContent = `${a.country} • ${a.pubDate.toLocaleString()}`;
+        item.appendChild(link); item.appendChild(meta); ul.appendChild(item);
+      });
+      card.appendChild(ul);
+      digestEl.appendChild(card);
+    }
+
+    function renderByDay(list){
+      clearNode(newsEl);
+      if(!list.length){
+        const c = document.createElement('div'); c.className='card'; c.textContent='No articles found for the chosen filters.'; newsEl.appendChild(c); return;
+      }
+      // group by date string
+      const groups = {};
+      list.forEach(a=>{
+        const key = a.pubDate.toDateString();
+        (groups[key] ||= []).push(a);
+      });
+      // latest first
+      Object.keys(groups).sort((a,b)=> new Date(b) - new Date(a)).forEach(day=>{
+        const dayCard = document.createElement('section'); dayCard.className='card';
+        const header = document.createElement('div'); header.className='row';
+        const h = document.createElement('h3'); h.textContent = `${day}`;
+        const count = document.createElement('div'); count.className='small'; count.textContent = `${groups[day].length} posts`;
+        header.appendChild(h); header.appendChild(count);
+        dayCard.appendChild(header);
+        const grid = document.createElement('div'); grid.className='grid-auto'; grid.style.marginTop='12px';
+        groups[day].sort((a,b)=> b.pubDate - a.pubDate).forEach(a=>{
+          const col = document.createElement('article'); col.className='card';
+          const top = document.createElement('div'); top.className='row';
+          const tag = document.createElement('span'); tag.className='tag'; tag.textContent = a.source.replace(/^https?:\/\//,'').replace(/\/.*$/,'');
+          const mini = document.createElement('div'); mini.className='small'; mini.textContent = a.pubDate.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+          top.appendChild(tag); top.appendChild(mini);
+          const title = document.createElement('a'); title.href=a.link; title.target='_blank'; title.rel='noopener'; title.style.display='block'; title.style.fontWeight='700'; title.style.marginTop='8px';
+          title.textContent = a.title || 'Untitled';
+          const desc = document.createElement('div'); desc.className='desc'; desc.textContent = a.description? (a.description.length>160? a.description.slice(0,160)+'…':a.description) : '';
+          const footer = document.createElement('div'); footer.className='meta'; footer.textContent = a.country;
+          col.appendChild(top); col.appendChild(title); if(a.description) col.appendChild(desc); col.appendChild(footer);
+          grid.appendChild(col);
+        });
+        dayCard.appendChild(grid);
+        newsEl.appendChild(dayCard);
+      });
+    }
+
+    function populateSourceFilter(articles){
+      const sources = Array.from(new Set(articles.map(a=> a.source.replace(/^https?:\/\//,'').replace(/\/.*$/,'')))).sort();
+      clearNode(sourceEl);
+      const allOpt = document.createElement('option'); allOpt.value=''; allOpt.textContent='All sources'; sourceEl.appendChild(allOpt);
+      sources.forEach(s=>{
+        const o=document.createElement('option'); o.value=s; o.textContent=s; sourceEl.appendChild(o);
+      });
+    }
+
+    // ---------- Filters & events ----------
+    refreshBtn.addEventListener('click', () => loadFeeds());
+    searchEl.addEventListener('input', () => {
+      // client-side filter of lastArticles
+      const q = searchEl.value.trim().toLowerCase();
+      const src = sourceEl.value;
+      let filtered = lastArticles.filter(a => (!src || a.source.includes(src)) && (!q || (a.title && a.title.toLowerCase().includes(q)) || (a.description && a.description.toLowerCase().includes(q))));
+      // respect selected country mapping: if user picked a country mapping we already limited articles at fetch time
+      renderAll(filtered);
     });
+    sourceEl.addEventListener('change', () => {
+      // re-apply client-side
+      const q = searchEl.value.trim().toLowerCase();
+      const src = sourceEl.value;
+      let filtered = lastArticles.filter(a => (!src || a.source.includes(src)) && (!q || (a.title && a.title.toLowerCase().includes(q)) || (a.description && a.description.toLowerCase().includes(q))));
+      renderAll(filtered);
+    });
+    countryEl.addEventListener('change', loadFeeds);
+    dateEl.addEventListener('change', loadFeeds);
 
-    // Scroll to top button
-    const scrollBtn = document.getElementById('scrollTopBtn');
-    window.onscroll = ()=>{
-      scrollBtn.style.display = (document.documentElement.scrollTop>100)? 'block':'none';
-    };
-    scrollBtn.onclick = ()=>{
-      document.documentElement.scrollTop=0;
-    };
+    // ---------- Initial load ----------
+    loadFeeds();
+
+    // expose for debugging if needed
+    window._lastArticles = () => lastArticles;
+  })();
   </script>
 </body>
 </html>
