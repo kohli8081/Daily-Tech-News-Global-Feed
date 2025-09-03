@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="transition-colors duration-300">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,21 +7,28 @@
   <meta name="description" content="A dynamic, auto-updating daily technology news blog that aggregates top stories from multiple sources worldwide." />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .tag { @apply text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 border border-gray-200; }
-    .card { @apply bg-white border border-gray-200 rounded-2xl shadow-sm p-5 hover:shadow-md transition; }
+    .tag { @apply text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-600; }
+    .card { @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm p-5 hover:shadow-md transition; }
     .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
     .fade-in { animation: fade .4s ease-in both; }
     @keyframes fade { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+    body { @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100; }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-  <header class="sticky top-0 z-50 backdrop-blur bg-white/80 border-b">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
-      <div class="h-10 w-10 rounded-xl bg-black text-white grid place-items-center font-bold">TN</div>
-      <div class="flex-1">
-        <h1 class="text-xl md:text-2xl font-bold leading-tight">Daily Tech News — Global</h1>
-        <p class="text-sm text-gray-600">Fresh tech headlines every day, from trusted sources worldwide. Auto-updated on each visit.</p>
+<body>
+  <header class="sticky top-0 z-50 backdrop-blur bg-white/80 dark:bg-gray-900/80 border-b dark:border-gray-700">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-black text-white grid place-items-center font-bold">TN</div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-bold leading-tight">Daily Tech News — Global</h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Fresh tech headlines every day, from trusted sources worldwide.</p>
+        </div>
       </div>
+      <!-- Dark/Light Mode Toggle -->
+      <button id="themeToggle" class="p-2 rounded-xl border bg-gray-100 dark:bg-gray-800 dark:border-gray-600 hover:scale-105 transition" title="Toggle theme">
+        🌙
+      </button>
     </div>
   </header>
 
@@ -31,24 +38,24 @@
 
     <!-- Controls -->
     <section class="mb-6 flex flex-col md:flex-row gap-3 md:items-center">
-      <div class="flex-1 flex gap-2">
-        <input id="search" type="search" placeholder="Search headlines (AI, Apple, cybersecurity, etc.)" class="w-full px-4 py-2.5 rounded-xl border outline-none focus:ring-2 focus:ring-black/10" />
-        <select id="sourceFilter" class="px-3 py-2.5 rounded-xl border min-w-[160px] outline-none focus:ring-2 focus:ring-black/10">
+      <div class="flex-1 flex flex-wrap gap-2">
+        <input id="search" type="search" placeholder="Search headlines (AI, Apple, cybersecurity, etc.)" class="flex-1 min-w-[200px] px-4 py-2.5 rounded-xl border outline-none focus:ring-2 focus:ring-black/10 dark:bg-gray-800 dark:border-gray-600" />
+        <select id="sourceFilter" class="px-3 py-2.5 rounded-xl border min-w-[160px] outline-none focus:ring-2 focus:ring-black/10 dark:bg-gray-800 dark:border-gray-600">
           <option value="">All sources</option>
         </select>
-        <select id="countryFilter" class="px-3 py-2.5 rounded-xl border min-w-[160px] outline-none focus:ring-2 focus:ring-black/10">
+        <select id="countryFilter" class="px-3 py-2.5 rounded-xl border min-w-[160px] outline-none focus:ring-2 focus:ring-black/10 dark:bg-gray-800 dark:border-gray-600">
           <option value="">All countries</option>
           <option value="India">India</option>
           <option value="Global">Global</option>
         </select>
       </div>
       <div class="flex gap-2">
-        <select id="days" class="px-3 py-2.5 rounded-xl border outline-none focus:ring-2 focus:ring-black/10">
+        <select id="days" class="px-3 py-2.5 rounded-xl border outline-none focus:ring-2 focus:ring-black/10 dark:bg-gray-800 dark:border-gray-600">
           <option value="1">Today</option>
           <option value="3" selected>Last 3 days</option>
           <option value="7">Last 7 days</option>
         </select>
-        <button id="refreshBtn" class="px-4 py-2.5 rounded-xl border bg-white hover:bg-gray-50 font-semibold">Refresh</button>
+        <button id="refreshBtn" class="px-4 py-2.5 rounded-xl border bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold">Refresh</button>
       </div>
     </section>
 
@@ -58,12 +65,26 @@
     <!-- News groups by day -->
     <section id="news" class="space-y-8"></section>
 
-    <footer class="mt-16 text-center text-sm text-gray-500">
-      <p>Built with vanilla JS + RSS. No API key needed. Sources: TechCrunch, The Verge, Ars Technica, Engadget, WIRED, Hacker News, Gadgets360 India, NDTV Tech.</p>
+    <footer class="mt-16 text-center text-sm text-gray-500 dark:text-gray-400">
+      <p>Built with vanilla JS + RSS. Sources: TechCrunch, The Verge, Ars Technica, Engadget, WIRED, Hacker News, Gadgets360 India, NDTV Tech.</p>
     </footer>
   </main>
 
   <script>
+    // ====== Theme Toggle ======
+    const themeBtn = document.getElementById('themeToggle');
+    const rootEl = document.documentElement;
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') rootEl.classList.add('dark');
+    themeBtn.textContent = rootEl.classList.contains('dark') ? '☀️' : '🌙';
+
+    themeBtn.onclick = () => {
+      rootEl.classList.toggle('dark');
+      const isDark = rootEl.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      themeBtn.textContent = isDark ? '☀️' : '🌙';
+    };
+
     // ====== Configuration ======
     const SOURCES = [
       { name: 'Gadgets360 India', url: 'https://feeds.feedburner.com/gadgets360-latest', country: 'India' },
@@ -75,11 +96,8 @@
       { name: 'WIRED', url: 'https://www.wired.com/feed/rss', country: 'Global' },
       { name: 'Hacker News', url: 'https://hnrss.org/frontpage', country: 'Global' },
     ];
-
     const PROXY = 'https://api.allorigins.win/raw?url=';
-
     const $ = sel => document.querySelector(sel);
-    const fmtDate = (d) => d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
 
     function uniqueBy(arr, keyFn) {
       const seen = new Set();
@@ -119,9 +137,7 @@
 
       const results = await Promise.allSettled(SOURCES.map(fetchFeed));
       let articles = [];
-      results.forEach((r, i) => {
-        if (r.status === 'fulfilled') articles = articles.concat(r.value);
-      });
+      results.forEach(r => { if (r.status === 'fulfilled') articles = articles.concat(r.value); });
 
       const now = new Date();
       const cutoff = new Date(now.getTime() - daysBack*24*60*60*1000);
@@ -144,15 +160,13 @@
         <li class="flex gap-2 items-start">
           <span class="tag">${a.source}</span>
           <a class="underline decoration-dotted hover:no-underline" href="${a.link}" target="_blank">${a.title}</a>
-        </li>
-      `).join('');
+        </li>`).join('');
 
       container.innerHTML = `
         <div class="card fade-in">
           <h2 class="text-lg md:text-xl font-bold mb-2">🇮🇳 Indian Tech News</h2>
           <ul class="space-y-2">${list}</ul>
-        </div>
-      `;
+        </div>`;
     }
 
     function renderDigest(articles) {
@@ -165,15 +179,13 @@
         <li class="flex gap-2 items-start">
           <span class="tag shrink-0">${a.source}</span>
           <a class="underline decoration-dotted hover:no-underline" href="${a.link}" target="_blank">${a.title}</a>
-        </li>
-      `).join('');
+        </li>`).join('');
 
       container.innerHTML = `
         <div class="card fade-in">
           <h2 class="text-lg md:text-xl font-bold mb-2">Daily Tech Digest</h2>
           <ul class="space-y-2">${bullets}</ul>
-        </div>
-      `;
+        </div>`;
     }
 
     function renderByDay(articles) {
@@ -198,8 +210,7 @@
         section.className = 'space-y-4 fade-in';
         section.innerHTML = `
           <h3 class="text-lg md:text-xl font-bold">${d}</h3>
-          <div class="grid-auto">${cards}</div>
-        `;
+          <div class="grid-auto">${cards}</div>`;
         wrap.appendChild(section);
       }
     }
@@ -212,8 +223,7 @@
             <span class="tag">${a.country}</span>
           </div>
           <a class="block text-base md:text-lg font-semibold hover:underline" href="${a.link}" target="_blank">${a.title}</a>
-        </article>
-      `;
+        </article>`;
     }
 
     function toggleLoading(is) {
