@@ -3,30 +3,31 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Daily Tech News — Global & India Pinned</title>
+  <title>Global Tech News — Daily Digest</title>
+  <meta name="description" content="Daily updated tech news from around the world. India news always on top." />
   <style>
-    :root {
-      --bg: #f7fafc; --card: #ffffff; --muted: #6b7280; --text: #0f172a; --accent: #0f62fe;
-      --card-border: #e6e9ef; --tag: #eef2ff; --scroll-bg:#0f62fe; --scroll-color:#fff;
+    :root{
+      --bg:#f7fafc; --card:#ffffff; --muted:#6b7280; --text:#0f172a; --accent:#0f62fe;
+      --card-border:#e6e9ef; --tag:#eef2ff; --scroll:#0f62fe;
     }
-    html.dark {
-      --bg: #121212; --card: #1e1e1e; --muted: #a1a1aa; --text: #e4e4e7; --accent: #3b82f6;
-      --card-border: #2e2e2e; --tag: #27272a; --scroll-bg:#3b82f6; --scroll-color:#fff;
+    html.dark{ 
+      --bg:#121212; --card:#1e1e1e; --muted:#a1a1aa; --text:#e4e4e7; 
+      --accent:#3b82f6; --card-border:#2e2e2e; --tag:#27272a; --scroll:#06b6d4;
     }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Inter,system-ui,Arial;background:var(--bg);color:var(--text);}
-    header{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--card),rgba(255,255,255,0.05));backdrop-filter:saturate(120%) blur(6px);border-bottom:1px solid var(--card-border)}
-    .bar{max-width:1100px;margin:0 auto;padding:14px;display:flex;align-items:center;gap:12px;justify-content:space-between}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:var(--text);}
+    header{position:sticky;top:0;z-index:20;background:var(--card);backdrop-filter:blur(6px);border-bottom:1px solid var(--card-border)}
+    .bar{max-width:1200px;margin:0 auto;padding:14px;display:flex;align-items:center;gap:12px;justify-content:space-between}
     .brand{display:flex;gap:12px;align-items:center}
     .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#2563eb);display:grid;place-items:center;color:white;font-weight:700}
     .title{font-weight:700;font-size:1.05rem}
     .subtitle{font-size:0.82rem;color:var(--muted)}
-    .controls{max-width:1100px;margin:14px auto;padding:0 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .controls{max-width:1200px;margin:14px auto;padding:0 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .input, select{padding:10px 12px;border-radius:10px;border:1px solid var(--card-border);background:var(--card);color:var(--text);min-width:160px}
     .search{flex:1;min-width:180px}
     .btn{padding:10px 14px;border-radius:10px;border:1px solid var(--card-border);background:var(--card);color:var(--accent);cursor:pointer;font-weight:600}
     .btn:hover{background:var(--accent);color:#fff;transition:all .2s}
-    .container{max-width:1100px;margin:18px auto;padding:0 14px 80px;display:grid;gap:18px}
+    .container{max-width:1200px;margin:18px auto;padding:0 14px 80px;display:grid;gap:18px}
     .card{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,0.12)}
     .india-section .card{border-left:4px solid #f59e0b}
     .card h3{margin:0;font-size:1rem}
@@ -34,187 +35,162 @@
     .grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
     .tag{display:inline-block;font-size:12px;padding:6px 8px;border-radius:999px;background:var(--tag);color:var(--text);border:1px solid var(--card-border);margin-right:8px}
     .desc{color:var(--muted);margin-top:8px;font-size:0.92rem;line-height:1.3}
-    .floating{position:fixed;right:18px;bottom:28px;z-index:60;width:46px;height:46px;border-radius:50%;background:var(--scroll-bg);color:var(--scroll-color);border:none;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.25);font-size:1.2rem}
+    .row{display:flex;align-items:center;gap:8px;justify-content:space-between}
+    .small{font-size:12px;color:var(--muted)}
+    .floating{position:fixed;right:18px;bottom:28px;z-index:60;width:46px;height:46px;border-radius:10px;border:1px solid var(--card-border);background:var(--scroll);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.25)}
     .hidden{display:none}
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
     .loader{display:inline-block;border:3px solid rgba(0,0,0,0.08);border-left-color:var(--accent);border-radius:999px;width:18px;height:18px;animation:spin .9s linear infinite}
+    img.article-img{max-width:100%;height:auto;border-radius:8px;margin-top:8px}
     @keyframes spin{to{transform:rotate(360deg)}}
     @media(max-width:640px){ .bar{padding:12px} .title{font-size:0.98rem} .controls{gap:8px} }
   </style>
 </head>
 <body>
-  <header>
-    <div class="bar">
-      <div class="brand">
-        <div class="logo">T</div>
-        <div>
-          <div class="title">Daily Tech News</div>
-          <div class="subtitle">Global • India Pinned</div>
-        </div>
+<header>
+  <div class="bar">
+    <div class="brand">
+      <div class="logo">TN</div>
+      <div>
+        <div class="title">Global Tech News</div>
+        <div class="subtitle">Daily worldwide technology updates</div>
       </div>
-      <button id="themeToggle" class="btn">🌙 Dark</button>
     </div>
-  </header>
-
-  <div class="controls">
-    <input type="text" id="searchInput" class="input search" placeholder="Search news..." />
-    <select id="countryFilter" class="input"></select>
-    <select id="sourceFilter" class="input">
-      <option value="all">All Sources</option>
-    </select>
-    <select id="dateFilter" class="input">
-      <option value="today">Today</option>
-      <option value="3days">Last 3 days</option>
-      <option value="7days">Last 7 days</option>
-    </select>
-    <button id="refreshBtn" class="btn">⟳ Refresh</button>
+    <button id="themeToggle" class="btn">🌙</button>
   </div>
+</header>
 
-  <div id="newsContainer" class="container">
-    <div class="india-section">
-      <h2>🇮🇳 India Tech News</h2>
-      <div id="indiaNews" class="grid-auto"></div>
-    </div>
-    <h2 id="countryTitle">🌍 All Tech News</h2>
-    <div id="newsGrid" class="grid-auto"></div>
-  </div>
+<div class="controls">
+  <input type="text" id="searchInput" class="input search" placeholder="Search news..." />
+  <select id="countryFilter"></select>
+  <button id="refreshBtn" class="btn">⟳ Refresh</button>
+</div>
 
-  <button id="scrollTopBtn" class="floating hidden">↑</button>
+<div class="container">
+  <section id="indiaNews" class="india-section">
+    <h2>🇮🇳 India Tech News</h2>
+    <div id="indiaFeed" class="grid-auto"></div>
+  </section>
+  <section>
+    <h2 id="countryTitle">🌍 Global Tech News</h2>
+    <div id="newsFeed" class="grid-auto"></div>
+  </section>
+</div>
 
-  <script>
-    const PROXY="https://api.allorigins.win/get?url=";
+<button id="scrollTopBtn" class="floating hidden">↑</button>
 
-    const COUNTRY_FEEDS={
-      global:[
-        {name:"TechCrunch",url:"https://techcrunch.com/feed/"},
-        {name:"The Verge",url:"https://www.theverge.com/rss/index.xml"},
-        {name:"Ars Technica",url:"http://feeds.arstechnica.com/arstechnica/index"},
-        {name:"Engadget",url:"https://www.engadget.com/rss.xml"},
-        {name:"WIRED",url:"https://www.wired.com/feed/rss"},
-        {name:"Hacker News",url:"https://hnrss.org/frontpage"}
-      ],
-      india:[
-        {name:"NDTV Gadgets360",url:"https://gadgets360.com/rss/feeds"},
-        {name:"NDTV Tech",url:"https://feeds.feedburner.com/ndtvnews-ndtvtech"}
-      ],
-      usa:[
-        {name:"TechCrunch",url:"https://techcrunch.com/feed/"},
-        {name:"CNET",url:"https://www.cnet.com/rss/news/"}
-      ],
-      uk:[
-        {name:"BBC Technology",url:"http://feeds.bbci.co.uk/news/technology/rss.xml"},
-        {name:"The Register",url:"https://www.theregister.com/headlines.atom"}
-      ],
-      japan:[
-        {name:"Nikkei Asia Tech",url:"https://asia.nikkei.com/rss/feed/nar/tech"}
-      ],
-      germany:[
-        {name:"Heise Online",url:"https://www.heise.de/rss/heise.rdf"}
-      ],
-      france:[
-        {name:"Le Monde Tech",url:"https://www.lemonde.fr/technologies/rss_full.xml"}
-      ]
-      // More countries can be added here
-    };
+<script>
+const PROXY="https://api.allorigins.win/get?url=";
+const SOURCES={
+  "Global":[
+    "https://feeds.feedburner.com/TechCrunch/",
+    "https://www.theverge.com/rss/index.xml",
+    "https://www.wired.com/feed/rss",
+    "https://www.engadget.com/rss.xml",
+    "https://hnrss.org/frontpage"
+  ],
+  "India":[
+    "https://gadgets360.com/rss/news",
+    "https://feeds.feedburner.com/ndtvnews-tech"
+  ],
+  "USA":[
+    "https://www.theverge.com/rss/index.xml",
+    "https://feeds.feedburner.com/TechCrunch/"
+  ],
+  "UK":[
+    "https://www.techradar.com/rss",
+    "https://www.wired.co.uk/feed/rss"
+  ],
+  "Germany":[
+    "https://www.heise.de/rss/heise-atom.xml"
+  ],
+  "Japan":[
+    "https://japantoday.com/feed/technology"
+  ],
+  "China":[
+    "https://www.scmp.com/rss/91/feed"
+  ],
+  "Australia":[
+    "https://www.zdnet.com/topic/australia/rss.xml"
+  ]
+};
+// Fill select with all keys
+const countryFilter=document.getElementById("countryFilter");
+Object.keys(SOURCES).forEach(c=>{
+  const opt=document.createElement("option");
+  opt.value=c;opt.textContent=c;countryFilter.appendChild(opt);
+});
+countryFilter.value="Global";
+const indiaFeed=document.getElementById("indiaFeed");
+const newsFeed=document.getElementById("newsFeed");
+const countryTitle=document.getElementById("countryTitle");
 
-    const countrySelect=document.getElementById("countryFilter");
-    Object.keys(COUNTRY_FEEDS).forEach(c=>{
-      let opt=document.createElement("option");
-      opt.value=c; opt.textContent=c.charAt(0).toUpperCase()+c.slice(1);
-      countrySelect.appendChild(opt);
-    });
+async function fetchFeed(url){
+  try{
+    const res=await fetch(PROXY+encodeURIComponent(url));
+    const data=await res.json();
+    const xml=new DOMParser().parseFromString(data.contents,"text/xml");
+    return [...xml.querySelectorAll("item")].map(item=>({
+      title:item.querySelector("title")?.textContent,
+      link:item.querySelector("link")?.textContent,
+      desc:item.querySelector("description")?.textContent,
+      date:item.querySelector("pubDate")?.textContent,
+      img:item.querySelector("media\\:content, enclosure[url]")?.getAttribute("url") || ""
+    }));
+  }catch(e){return []}
+}
 
-    const newsGrid=document.getElementById("newsGrid");
-    const indiaNews=document.getElementById("indiaNews");
-    const sourceFilter=document.getElementById("sourceFilter");
-    const dateFilter=document.getElementById("dateFilter");
-    const searchInput=document.getElementById("searchInput");
-    const refreshBtn=document.getElementById("refreshBtn");
-    const themeToggle=document.getElementById("themeToggle");
-    const scrollTopBtn=document.getElementById("scrollTopBtn");
-    const countryTitle=document.getElementById("countryTitle");
+function renderArticles(container,articles){
+  container.innerHTML="";
+  if(!articles.length){container.innerHTML="<p>No news found. Showing older posts soon.</p>";return;}
+  articles.forEach(a=>{
+    const card=document.createElement("div");card.className="card";
+    card.innerHTML=`<h3><a href="${a.link}" target="_blank">${a.title}</a></h3>
+      ${a.img?`<img src="${a.img}" class="article-img" alt="">`:""}
+      <div class="meta">${new Date(a.date).toLocaleString()}</div>
+      <div class="desc">${a.desc||""}</div>`;
+    container.appendChild(card);
+  });
+}
 
-    let allNews=[]; let dark=false;
+async function loadNews(){
+  document.getElementById("refreshBtn").innerHTML='<span class="loader"></span>';
+  // India always
+  let indiaArticles=[];
+  for(const url of SOURCES["India"]){indiaArticles=[...indiaArticles,...await fetchFeed(url)]}
+  renderArticles(indiaFeed,indiaArticles.slice(0,6));
+  // Selected
+  const sel=countryFilter.value;
+  countryTitle.textContent=`${sel==="Global"?"🌍 Global":sel} Tech News`;
+  let articles=[];
+  for(const url of SOURCES[sel]||[]){articles=[...articles,...await fetchFeed(url)]}
+  if(!articles.length){ // fallback: show global if empty
+    for(const url of SOURCES["Global"]){articles=[...articles,...await fetchFeed(url)]}
+  }
+  renderArticles(newsFeed,articles.slice(0,12));
+  document.getElementById("refreshBtn").textContent="⟳ Refresh";
+}
 
-    async function fetchFeed(src){
-      try{
-        let res=await fetch(PROXY+encodeURIComponent(src.url));
-        let data=await res.json();
-        let parser=new DOMParser();
-        let doc=parser.parseFromString(data.contents,"text/xml");
-        let items=[...doc.querySelectorAll("item")].map(it=>({
-          title:it.querySelector("title")?.textContent,
-          link:it.querySelector("link")?.textContent,
-          desc:it.querySelector("description")?.textContent||"",
-          date:new Date(it.querySelector("pubDate")?.textContent||Date.now()),
-          source:src.name
-        }));
-        return items;
-      }catch(e){console.error("Feed error",src.name,e);return[];}
-    }
+document.getElementById("refreshBtn").onclick=loadNews;
+countryFilter.onchange=loadNews;
+document.getElementById("searchInput").oninput=e=>{
+  const q=e.target.value.toLowerCase();
+  document.querySelectorAll(".card").forEach(c=>{
+    c.style.display=c.textContent.toLowerCase().includes(q)?"block":"none";
+  });
+};
 
-    async function loadNews(){
-      newsGrid.innerHTML='<div class="loader"></div>';
-      indiaNews.innerHTML='<div class="loader"></div>';
-      allNews=[];
-      // India pinned
-      let indiaItems=(await Promise.all(COUNTRY_FEEDS.india.map(fetchFeed))).flat();
-      indiaNews.innerHTML=indiaItems.map(renderCard).join("");
-      // Selected country
-      let sel=countrySelect.value||"global";
-      let feeds=COUNTRY_FEEDS[sel]||COUNTRY_FEEDS.global;
-      let items=(await Promise.all(feeds.map(fetchFeed))).flat();
-      allNews=items;
-      populateSources();
-      renderNews();
-    }
+const themeToggle=document.getElementById("themeToggle");
+themeToggle.onclick=()=>{
+  document.documentElement.classList.toggle("dark");
+  themeToggle.textContent=document.documentElement.classList.contains("dark")?"☀️":"🌙";
+};
+const scrollBtn=document.getElementById("scrollTopBtn");
+window.addEventListener("scroll",()=>{scrollBtn.classList.toggle("hidden",window.scrollY<300)});
+scrollBtn.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
-    function renderCard(n){
-      return `<div class="card">
-        <h3><a href="${n.link}" target="_blank">${n.title}</a></h3>
-        <div class="meta">${n.source} • ${n.date.toDateString()}</div>
-        <p class="desc">${n.desc.slice(0,120)}...</p>
-      </div>`;
-    }
-
-    function renderNews(){
-      let filtered=allNews;
-      let q=searchInput.value.toLowerCase();
-      if(q) filtered=filtered.filter(n=>n.title.toLowerCase().includes(q)||n.desc.toLowerCase().includes(q));
-      let src=sourceFilter.value;
-      if(src!=="all") filtered=filtered.filter(n=>n.source===src);
-      let df=dateFilter.value; let now=new Date();
-      filtered=filtered.filter(n=>{
-        let d=(now-n.date)/86400000;
-        return df==="today"?d<1:df==="3days"?d<3:df==="7days"?d<7:true;
-      });
-      countryTitle.textContent=`🌍 ${countrySelect.options[countrySelect.selectedIndex].text} Tech News`;
-      newsGrid.innerHTML=filtered.map(renderCard).join("")||"<p>No news found.</p>";
-    }
-
-    function populateSources(){
-      let unique=[...new Set(allNews.map(n=>n.source))];
-      sourceFilter.innerHTML='<option value="all">All Sources</option>'+unique.map(s=>`<option value="${s}">${s}</option>`).join("");
-    }
-
-    refreshBtn.onclick=loadNews;
-    searchInput.oninput=renderNews;
-    sourceFilter.onchange=renderNews;
-    dateFilter.onchange=renderNews;
-    countrySelect.onchange=loadNews;
-
-    themeToggle.onclick=()=>{
-      dark=!dark;document.documentElement.classList.toggle("dark",dark);
-      themeToggle.textContent=dark?"☀️ Light":"🌙 Dark";
-    };
-
-    window.addEventListener("scroll",()=>{
-      scrollTopBtn.classList.toggle("hidden",window.scrollY<200);
-    });
-    scrollTopBtn.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
-
-    loadNews();
-  </script>
+loadNews();
+</script>
 </body>
 </html>
